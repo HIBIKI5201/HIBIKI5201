@@ -1,7 +1,8 @@
 # GitHub_Profile
+## States
+[![Anurag's GitHub stats](https://github-readme-stats.vercel.app/api?username=anuraghazra)](https://github.com/anuraghazra/github-readme-stats)
+## trophy
 [![trophy](https://github-profile-trophy.vercel.app/?username=HIBIKI5201)](https://github.com/ryo-ma/github-profile-trophy)
-
-
 <!--
 **HIBIKI5201/HIBIKI5201** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
