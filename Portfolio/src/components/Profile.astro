@@ -1,0 +1,79 @@
+---
+---
+<section class="profile">
+    <h2 class="section-title">Tactical Intel <small>// PROFILE</small></h2>
+    <div class="grid-2">
+        <div class="mil-border card">
+            <h3>Interests</h3>
+            <p>ゲーム研究、ストーリー考察、勉強会、ボーイスカウト</p>
+        </div>
+        <div class="mil-border card">
+            <h3>Preferred Genres</h3>
+            <p>TPS、RTS、シミュレーション</p>
+        </div>
+    </div>
+    <div class="mil-border card mt">
+        <h3>Combat Training (Skills)</h3>
+        <div class="skill-bar"><div class="fill" style="width: 85%">Unity / C#</div></div>
+        <div class="skill-bar"><div class="fill" style="width: 25%">Unreal Engine</div></div>
+    </div>
+    <div class="mil-border card mt">
+        <h3>Favorite Operations (Games)</h3>
+        <p>Warframe、メタルギアシリーズ、ドールズフロントライン</p>
+    </div>
+</section>
+
+<style>
+    .section-title {
+        font-size: 1.8rem;
+        margin-bottom: 30px;
+        border-left: 5px solid var(--accent-color);
+        padding-left: 15px;
+        color: var(--accent-color);
+    }
+
+    .section-title small {
+        font-size: 0.9rem;
+        color: var(--text-sub);
+    }
+
+    .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    @media (max-width: 600px) {
+        .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    .card h3 {
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+        color: var(--accent-color);
+        border-bottom: 1px solid rgba(118, 255, 3, 0.2);
+        padding-bottom: 5px;
+    }
+
+    .mt { margin-top: 20px; }
+
+    .skill-bar {
+        height: 12px;
+        background: rgba(255, 255, 255, 0.1);
+        margin-bottom: 15px;
+        position: relative;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .skill-bar .fill {
+        height: 100%;
+        background: var(--accent-color);
+        display: flex;
+        align-items: center;
+        padding-left: 10px;
+        font-size: 0.7rem;
+        color: #000;
+        font-weight: bold;
+        white-space: nowrap;
+    }
+</style>

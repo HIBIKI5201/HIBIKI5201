@@ -1,0 +1,95 @@
+---
+---
+<header class="hero mil-border">
+    <div class="status-indicator">SYSTEM ONLINE: ACTIVE</div>
+    <h1>八幡 拓音 <small>TAKUTO YAHATA</small></h1>
+    <div class="affiliation">
+        <span class="tag">AFFILIATION</span>
+        バンタンゲームアカデミー東京校 / 星槎大学 大学域
+    </div>
+    <div class="role">
+        <span class="tag">SPEC</span>
+        ゲームプログラマー専攻
+    </div>
+    <div class="tech-stack">
+        <span class="tech-item">Unity [1Y5M]</span>
+        <span class="tech-item">C# [1Y2M]</span>
+        <span class="tech-item">UnrealEngine [1M]</span>
+    </div>
+</header>
+
+<style>
+    header {
+        padding: 40px;
+        margin-top: 20px;
+        margin-bottom: 40px;
+    }
+
+    h1 {
+        font-size: 3rem;
+        margin: 10px 0;
+        color: #fff;
+    }
+
+    h1 small {
+        font-size: 1rem;
+        display: block;
+        opacity: 0.6;
+        font-weight: 300;
+    }
+
+    .status-indicator {
+        font-size: 0.8rem;
+        color: var(--accent-color);
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .status-indicator::before {
+        content: "";
+        width: 10px;
+        height: 10px;
+        background: var(--accent-color);
+        border-radius: 50%;
+        display: inline-block;
+        box-shadow: 0 0 10px var(--accent-color);
+        animation: blink 1.5s infinite;
+    }
+
+    @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
+    }
+
+    .affiliation, .role {
+        margin: 10px 0;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .tag {
+        background: var(--military-green);
+        color: #fff;
+        font-size: 0.7rem;
+        padding: 2px 8px;
+        border-radius: 2px;
+    }
+
+    .tech-stack {
+        margin-top: 20px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .tech-item {
+        border: 1px solid var(--accent-color);
+        padding: 4px 12px;
+        font-size: 0.9rem;
+        color: var(--accent-color);
+        background: rgba(118, 255, 3, 0.1);
+    }
+</style>
