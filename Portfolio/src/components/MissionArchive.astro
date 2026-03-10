@@ -181,10 +181,22 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
     .tags {
         display: flex;
         gap: 8px;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 5px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Hide scrollbar for clean look but keep functionality */
+    .tags::-webkit-scrollbar {
+        height: 3px;
+    }
+    .tags::-webkit-scrollbar-thumb {
+        background: rgba(255, 18, 18, 0.3);
     }
 
     .tag {
+        flex: 0 0 auto;
         color: var(--accent-color);
         background: rgba(255, 18, 18, 0.1);
         border: 1px solid rgba(255, 18, 18, 0.3);
@@ -205,6 +217,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         line-height: 1.6;
         color: var(--text-main);
         margin-bottom: 20px;
+        white-space: pre-wrap;
     }
 
     .entry-btn {
@@ -213,5 +226,14 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         color: var(--accent-color);
         font-weight: bold;
         opacity: 0.6;
+        transition: all 0.3s ease;
+        letter-spacing: 0.1em;
+    }
+
+    .mission-link:hover .entry-btn {
+        opacity: 1;
+        text-shadow: 0 0 8px var(--accent-color), 0 0 15px var(--accent-color);
+        transform: scale(1.05);
+        color: #fff;
     }
 </style>

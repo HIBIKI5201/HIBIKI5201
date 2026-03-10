@@ -9,6 +9,7 @@ const projects = defineCollection({
     tags: z.array(z.string()),
     status: z.enum(['ACTIVE', 'COMPLETED', 'ARCHIVED']),
     description: z.string(),
+    overview: z.string().optional(),
     thumbnail: z.string().optional(),
     videoUrl: z.string().url().optional(),
     releaseUrl: z.string().url().optional(),
