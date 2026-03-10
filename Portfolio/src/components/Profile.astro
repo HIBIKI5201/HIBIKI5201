@@ -15,7 +15,7 @@
     <div class="mil-border card mt">
         <h3>Combat Training (Skills)</h3>
         <div class="skill-bar"><div class="fill" style="width: 85%">Unity / C#</div></div>
-        <div class="skill-bar"><div class="fill" style="width: 25%">Unreal Engine</div></div>
+        <div class="skill-bar"><div class="fill orange" style="width: 25%">Unreal Engine</div></div>
     </div>
     <div class="mil-border card mt">
         <h3>Favorite Operations (Games)</h3>
@@ -51,7 +51,7 @@
         font-size: 1.1rem;
         margin-bottom: 15px;
         color: var(--accent-color);
-        border-bottom: 1px solid rgba(118, 255, 3, 0.2);
+        border-bottom: 1px solid rgba(255, 18, 18, 0.2);
         padding-bottom: 5px;
     }
 
@@ -72,8 +72,14 @@
         align-items: center;
         padding-left: 10px;
         font-size: 0.7rem;
-        color: #000;
+        color: #fff;
         font-weight: bold;
         white-space: nowrap;
+        box-shadow: 0 0 10px rgba(255, 18, 18, 0.5);
+    }
+
+    .skill-bar .fill.orange {
+        background: var(--warning-color);
+        box-shadow: 0 0 10px rgba(255, 140, 0, 0.5);
     }
 </style>
