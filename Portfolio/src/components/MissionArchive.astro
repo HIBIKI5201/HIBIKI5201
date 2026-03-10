@@ -28,10 +28,16 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
                         <h3>{mission.data.title}</h3>
                         <div class="meta">
                             <span class="date">{mission.data.date}</span>
-                            <div class="tags">
-                                {mission.data.stack.map(s => <span class="tag stack">{s}</span>)}
-                                {mission.data.technologies.map(t => <span class="tag tech">{t}</span>)}
-                                {mission.data.tools && mission.data.tools.map(tool => <span class="tag tool">{tool}</span>)}
+                            <div class="tags-container">
+                                <div class="tags-inner">
+                                    {[...Array(2)].map(() => (
+                                        <>
+                                            {mission.data.stack.map(s => <span class="tag stack">{s}</span>)}
+                                            {mission.data.technologies.map(t => <span class="tag tech">{t}</span>)}
+                                            {mission.data.tools && mission.data.tools.map(tool => <span class="tag tool">{tool}</span>)}
+                                        </>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                         <p class="desc">{mission.data.description}</p>
@@ -180,21 +186,28 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         font-family: monospace;
     }
 
-    .tags {
-        display: flex;
-        gap: 8px;
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        padding-bottom: 5px;
-        -webkit-overflow-scrolling: touch;
+    .tags-container {
+        width: 100%;
+        overflow: hidden;
+        position: relative;
+        padding: 5px 0;
+        mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
     }
 
-    /* Hide scrollbar for clean look but keep functionality */
-    .tags::-webkit-scrollbar {
-        height: 3px;
+    .tags-inner {
+        display: flex;
+        gap: 8px;
+        width: max-content;
+        animation: marquee 20s linear infinite;
     }
-    .tags::-webkit-scrollbar-thumb {
-        background: rgba(255, 18, 18, 0.3);
+
+    .mission-link:hover .tags-inner {
+        animation-play-state: paused;
+    }
+
+    @keyframes marquee {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
     }
 
     .tag {
@@ -207,6 +220,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         font-weight: bold;
         text-transform: uppercase;
         letter-spacing: 0.05em;
+        white-space: nowrap;
     }
 
     .tag.stack::before { content: ":: "; opacity: 0.6; }
