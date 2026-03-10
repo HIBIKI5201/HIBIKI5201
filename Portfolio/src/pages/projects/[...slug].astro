@@ -41,55 +41,64 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
             </div>
         )}
 
-        <div class="mission-grid-layout">
-            <section class="mil-border mission-body">
-                <div class="content-warning">ACCESSING CLASSIFIED DATA... DONE.</div>
-                <div class="markdown-content">
-                    <Content />
+        <section class="mil-border intel-module">
+            <div class="intel-grid">
+                <div class="intel-main">
+                    <div class="asset-label">// MISSION OVERVIEW</div>
+                    <div class="overview-content">
+                        {entry.data.overview || entry.data.description}
+                    </div>
                 </div>
-            </section>
 
-            {(entry.data.videoUrl || entry.data.releaseUrl || entry.data.repoUrl) && (
-                <aside class="mission-assets">
-                    {entry.data.videoUrl && (
-                        <div class="asset-item mil-border">
-                            <div class="asset-label">// MISSION INTEL (VIDEO)</div>
-                            <div class="video-container">
-                                {entry.data.videoUrl.includes('youtube.com') || entry.data.videoUrl.includes('youtu.be') ? (
-                                    <iframe 
-                                        src={entry.data.videoUrl.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/')} 
-                                        title="Mission Intel"
-                                        frameborder="0" 
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                        allowfullscreen
-                                    ></iframe>
-                                ) : (
-                                    <a href={entry.data.videoUrl} target="_blank" class="asset-link-btn">WATCH INTEL VIDEO >></a>
-                                )}
+                {(entry.data.videoUrl || entry.data.releaseUrl || entry.data.repoUrl) && (
+                    <div class="intel-side">
+                        {entry.data.videoUrl && (
+                            <div class="intel-asset-box">
+                                <div class="asset-label">// INTEL VIDEO</div>
+                                <div class="video-container">
+                                    {entry.data.videoUrl.includes('youtube.com') || entry.data.videoUrl.includes('youtu.be') ? (
+                                        <iframe 
+                                            src={entry.data.videoUrl.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/')} 
+                                            title="Mission Intel"
+                                            frameborder="0" 
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                            allowfullscreen
+                                        ></iframe>
+                                    ) : (
+                                        <a href={entry.data.videoUrl} target="_blank" class="asset-link-btn">WATCH VIDEO >></a>
+                                    )}
+                                </div>
                             </div>
-                        </div>
-                    )}
+                        )}
 
-                    {(entry.data.releaseUrl || entry.data.repoUrl) && (
-                        <div class="asset-item mil-border">
-                            <div class="asset-label">// OPERATIONAL LINKS</div>
-                            <div class="link-grid">
-                                {entry.data.releaseUrl && (
-                                    <a href={entry.data.releaseUrl} target="_blank" class="asset-link-btn highlight">
-                                        LAUNCH MISSION (PLAY) >>
-                                    </a>
-                                )}
-                                {entry.data.repoUrl && (
-                                    <a href={entry.data.repoUrl} target="_blank" class="asset-link-btn">
-                                        RECOVER SOURCE DATA (REPO) >>
-                                    </a>
-                                )}
+                        {(entry.data.releaseUrl || entry.data.repoUrl) && (
+                            <div class="intel-asset-box">
+                                <div class="asset-label">// OPERATIONAL LINKS</div>
+                                <div class="link-grid">
+                                    {entry.data.releaseUrl && (
+                                        <a href={entry.data.releaseUrl} target="_blank" class="asset-link-btn highlight">
+                                            LAUNCH MISSION >>
+                                        </a>
+                                    )}
+                                    {entry.data.repoUrl && (
+                                        <a href={entry.data.repoUrl} target="_blank" class="asset-link-btn">
+                                            SOURCE CODE >>
+                                        </a>
+                                    )}
+                                </div>
                             </div>
-                        </div>
-                    )}
-                </aside>
-            )}
-        </div>
+                        )}
+                    </div>
+                )}
+            </div>
+        </section>
+
+        <section class="mil-border mission-body-full">
+            <div class="content-warning">ACCESSING CLASSIFIED DATA... DONE.</div>
+            <div class="markdown-content">
+                <Content />
+            </div>
+        </section>
 
         <div class="footer-actions">
             <a href={baseUrl} class="mil-border action-btn">CLOSE LOG</a>
@@ -158,10 +167,17 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         display: flex;
         gap: 10px;
         margin-top: 15px;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 8px;
+        -webkit-overflow-scrolling: touch;
     }
 
+    .tags::-webkit-scrollbar { height: 3px; }
+    .tags::-webkit-scrollbar-thumb { background: rgba(255, 18, 18, 0.3); }
+
     .tag {
+        flex: 0 0 auto;
         color: var(--accent-color);
         background: rgba(255, 18, 18, 0.1);
         border: 1px solid rgba(255, 18, 18, 0.3);
@@ -190,62 +206,69 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         opacity: 0.9;
     }
 
-    .mission-grid-layout {
+    /* Intel Module Container */
+    .intel-module {
+        margin-bottom: 30px;
+        background: rgba(26, 20, 20, 0.6);
+        overflow: hidden;
+    }
+
+    .intel-grid {
         display: grid;
-        grid-template-columns: 1fr 350px;
-        gap: 30px;
-        align-items: start;
+        grid-template-columns: 1fr 400px;
+        min-height: 350px;
     }
 
     @media (max-width: 992px) {
-        .mission-grid-layout {
+        .intel-grid {
             grid-template-columns: 1fr;
         }
     }
 
-    .mission-body {
-        padding: 40px;
-        min-height: 300px;
-        background: rgba(26, 20, 20, 0.4);
-    }
-
-    .content-warning {
-        font-size: 0.7rem;
-        color: var(--accent-color);
-        margin-bottom: 30px;
-        border-bottom: 1px solid rgba(255, 18, 18, 0.2);
-        padding-bottom: 10px;
-    }
-
-    .markdown-content {
-        line-height: 1.8;
-        color: var(--text-main);
-    }
-
-    .markdown-content :global(p) { margin-bottom: 20px; }
-    .markdown-content :global(h2) { 
-        color: var(--accent-color); 
-        margin: 40px 0 20px; 
-        border-bottom: 1px solid var(--accent-color);
-    }
-
-    .mission-assets {
+    .intel-main {
+        padding: 30px;
         display: flex;
         flex-direction: column;
-        gap: 20px;
+        border-right: 1px solid rgba(255, 18, 18, 0.2);
     }
 
-    .asset-item {
-        padding: 20px;
-        background: rgba(26, 20, 20, 0.6);
+    @media (max-width: 992px) {
+        .intel-main {
+            border-right: none;
+            border-bottom: 1px solid rgba(255, 18, 18, 0.2);
+        }
+    }
+
+    .intel-side {
+        padding: 30px;
+        background: rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+    }
+
+    .intel-asset-box {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .overview-content {
+        font-size: 1.15rem;
+        line-height: 1.8;
+        color: var(--text-main);
+        flex-grow: 1;
+        display: block;
+        padding-top: 10px;
+        white-space: pre-wrap;
     }
 
     .asset-label {
         font-size: 0.7rem;
         font-weight: bold;
         color: var(--accent-color);
-        margin-bottom: 15px;
         letter-spacing: 0.1em;
+        opacity: 0.8;
     }
 
     .video-container {
@@ -281,13 +304,15 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         text-decoration: none;
         font-size: 0.8rem;
         font-weight: bold;
-        transition: all 0.2s;
+        transition: all 0.3s ease;
     }
 
     .asset-link-btn:hover {
         background: rgba(255, 18, 18, 0.15);
         border-color: var(--accent-color);
         transform: translateY(-2px);
+        box-shadow: 0 0 15px rgba(255, 18, 18, 0.3);
+        color: #fff;
     }
 
     .asset-link-btn.highlight {
@@ -298,7 +323,37 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
 
     .asset-link-btn.highlight:hover {
         background: #ff4545;
-        box-shadow: 0 0 15px rgba(255, 18, 18, 0.4);
+        box-shadow: 0 0 20px rgba(255, 18, 18, 0.5);
+    }
+
+    /* Body Full Section */
+    .mission-body-full {
+        padding: 40px;
+        background: rgba(26, 20, 20, 0.4);
+        margin-bottom: 40px;
+    }
+
+    .content-warning {
+        font-size: 0.7rem;
+        color: var(--accent-color);
+        margin-bottom: 30px;
+        border-bottom: 1px solid rgba(255, 18, 18, 0.2);
+        padding-bottom: 10px;
+    }
+
+    .markdown-content {
+        line-height: 1.8;
+        color: var(--text-main);
+    }
+
+    .markdown-content :global(p) { 
+        margin-bottom: 20px; 
+        white-space: pre-wrap;
+    }
+    .markdown-content :global(h2) { 
+        color: var(--accent-color); 
+        margin: 40px 0 20px; 
+        border-bottom: 1px solid var(--accent-color);
     }
 
     .footer-actions {
@@ -312,11 +367,13 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         font-weight: bold;
         color: var(--accent-color);
         text-decoration: none;
-        transition: all 0.2s;
+        transition: all 0.3s ease;
     }
 
     .action-btn:hover {
         background: rgba(255, 18, 18, 0.1);
-        box-shadow: 0 0 20px rgba(255, 18, 18, 0.2);
+        box-shadow: 0 0 20px rgba(255, 18, 18, 0.3);
+        color: #fff;
+        transform: scale(1.05);
     }
 </style>
