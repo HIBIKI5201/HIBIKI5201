@@ -1,5 +1,5 @@
 ---
-id: "MISSION-002"
+projectCode: "MISSION-002"
 title: "Portfolio Website 2026"
 date: "2026-03"
 tags: ["Astro", "Node.js", "Tactical UI"]
