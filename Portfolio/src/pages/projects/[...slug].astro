@@ -1,0 +1,150 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+
+export async function getStaticPaths() {
+  const missions = await getCollection("projects");
+  return missions.map(entry => ({
+    params: { slug: entry.slug }, props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+
+// BASE_URLの末尾に / があるかを確認し、無ければ付けます
+let baseUrl = import.meta.env.BASE_URL;
+if (!baseUrl.endsWith("/")) baseUrl += "/";
+---
+
+<Layout title={`${entry.data.title} - MISSION DETAILS`}>
+    <div class="mission-detail-container">
+        <a href={baseUrl} class="back-btn"><< RETURN TO HQ (HOME)</a>
+        
+        <header class="mil-border detail-header">
+            <div class="header-top">
+                <span class="id">{entry.data.id}</span>
+                <span class={`status ${entry.data.status.toLowerCase()}`}>{entry.data.status}</span>
+            </div>
+            <h1>{entry.data.title}</h1>
+            <div class="meta">
+                <span class="label">TIMESTAMP:</span> {entry.data.date}
+                <div class="tags">
+                    {entry.data.tags.map(tag => <span class="tag">#{tag}</span>)}
+                </div>
+            </div>
+        </header>
+
+        <section class="mil-border mission-body">
+            <div class="content-warning">ACCESSING CLASSIFIED DATA... DONE.</div>
+            <div class="markdown-content">
+                <Content />
+            </div>
+        </section>
+
+        <div class="footer-actions">
+            <a href={baseUrl} class="mil-border action-btn">CLOSE LOG</a>
+        </div>
+    </div>
+</Layout>
+
+<style>
+    .mission-detail-container {
+        padding-top: 20px;
+    }
+
+    .back-btn {
+        display: inline-block;
+        margin-bottom: 20px;
+        font-size: 0.8rem;
+        font-weight: bold;
+        color: var(--warning-color);
+        text-decoration: none;
+    }
+
+    .detail-header {
+        margin-bottom: 30px;
+        padding: 30px;
+    }
+
+    .header-top {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+    }
+
+    .id {
+        color: var(--accent-color);
+        border: 1px solid var(--accent-color);
+        padding: 2px 12px;
+        font-weight: bold;
+    }
+
+    .status {
+        padding: 2px 12px;
+        font-weight: bold;
+        color: #fff;
+    }
+    .status.active { background: #ff1212; box-shadow: 0 0 10px rgba(255, 18, 18, 0.5); }
+    .status.completed { background: #1e90ff; }
+    .status.archived { background: #888; }
+
+    h1 {
+        font-size: 2.5rem;
+        color: #fff;
+        margin-bottom: 20px;
+    }
+
+    .meta {
+        font-size: 0.9rem;
+        color: var(--text-sub);
+    }
+
+    .label { color: var(--accent-color); font-weight: bold; }
+
+    .tags {
+        display: flex;
+        gap: 15px;
+        margin-top: 10px;
+    }
+
+    .tag { color: var(--warning-color); }
+
+    .mission-body {
+        padding: 40px;
+        min-height: 300px;
+    }
+
+    .content-warning {
+        font-size: 0.7rem;
+        color: var(--accent-color);
+        margin-bottom: 30px;
+        border-bottom: 1px solid rgba(255, 18, 18, 0.2);
+        padding-bottom: 10px;
+    }
+
+    .markdown-content {
+        line-height: 1.8;
+        color: var(--text-main);
+    }
+
+    .markdown-content :global(p) { margin-bottom: 20px; }
+    .markdown-content :global(h2) { 
+        color: var(--accent-color); 
+        margin: 40px 0 20px; 
+        border-bottom: 1px solid var(--accent-color);
+    }
+
+    .footer-actions {
+        margin-top: 40px;
+        text-align: center;
+    }
+
+    .action-btn {
+        display: inline-block;
+        padding: 15px 40px;
+        font-weight: bold;
+        color: var(--accent-color);
+        text-decoration: none;
+    }
+</style>

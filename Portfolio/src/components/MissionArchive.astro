@@ -1,0 +1,142 @@
+---
+import { getCollection } from "astro:content";
+
+const missions = await getCollection("projects");
+missions.sort((a, b) => b.data.date.localeCompare(a.data.date));
+
+// BASE_URLの末尾に / があるかを確認し、無ければ付けます
+let baseUrl = import.meta.env.BASE_URL;
+if (!baseUrl.endsWith("/")) baseUrl += "/";
+---
+
+<section class="mission-archive">
+    <h2 class="section-title">Mission Archive <small>// ASSET DATABASE</small></h2>
+    
+    <div class="mission-grid">
+        {missions.map((mission) => (
+            <a href={`${baseUrl}projects/${mission.slug}/`} class="mission-link">
+                <div class="mil-border mission-item">
+                    <div class="mission-header">
+                        <span class="id">{mission.data.id}</span>
+                        <span class={`status ${mission.data.status.toLowerCase()}`}>{mission.data.status}</span>
+                    </div>
+                    <h3>{mission.data.title}</h3>
+                    <div class="meta">
+                        <span class="date">{mission.data.date}</span>
+                        <div class="tags">
+                            {mission.data.tags.map(tag => <span class="tag">#{tag}</span>)}
+                        </div>
+                    </div>
+                    <p class="desc">{mission.data.description}</p>
+                    <div class="entry-btn">ENTRY LOG ACCESS >></div>
+                </div>
+            </a>
+        ))}
+    </div>
+</section>
+
+<style>
+    .section-title {
+        font-size: 1.8rem;
+        margin-bottom: 30px;
+        border-left: 5px solid var(--accent-color);
+        padding-left: 15px;
+        color: var(--accent-color);
+    }
+
+    .section-title small {
+        font-size: 0.9rem;
+        color: var(--text-sub);
+    }
+
+    .mission-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .mission-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+
+    .mission-item {
+        background: rgba(26, 20, 20, 0.4);
+        transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+        cursor: pointer;
+    }
+
+    .mission-link:hover .mission-item {
+        background: rgba(255, 18, 18, 0.1);
+        transform: translateX(10px);
+        box-shadow: -5px 0 0 var(--accent-color);
+    }
+
+    .mission-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        font-size: 0.8rem;
+        font-weight: bold;
+    }
+
+    .id {
+        color: var(--accent-color);
+        border: 1px solid var(--accent-color);
+        padding: 2px 8px;
+    }
+
+    .status {
+        padding: 2px 8px;
+        border-radius: 2px;
+        color: #fff;
+    }
+
+    .status.active { background: #ff1212; }
+    .status.completed { background: #1e90ff; }
+    .status.archived { background: #888; }
+
+    h3 {
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+        color: #fff;
+    }
+
+    .meta {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        margin-bottom: 15px;
+        font-size: 0.8rem;
+    }
+
+    .date {
+        color: var(--warning-color);
+    }
+
+    .tags {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .tag {
+        color: var(--text-sub);
+    }
+
+    .desc {
+        font-size: 0.9rem;
+        line-height: 1.6;
+        color: var(--text-main);
+        margin-bottom: 20px;
+    }
+
+    .entry-btn {
+        text-align: right;
+        font-size: 0.7rem;
+        color: var(--accent-color);
+        font-weight: bold;
+        opacity: 0.6;
+    }
+</style>
