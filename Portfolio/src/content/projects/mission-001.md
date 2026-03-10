@@ -2,7 +2,9 @@
 projectCode: "MISSION-001"
 title: "Symphony Kill The Cryptos"
 date: "2025-06-01 -> 2026-2-17"
-tags: ["C#", "Unity"]
+stack: ["Unity", "C#"]
+technologies: ["Clean Architecture", "DDD", "HDRP", "UI ToolKit"]
+tools: ["CRI Ware", "VRM", Blender]
 status: "COMPLETED"
 description: "1年掛けて個人制作した、ハイスピードタイピングカードゲーム"
 overview: "「SymphonyKillTheCryptos」は、タイピング操作とカードバトルを融合させたハイスピード戦略ゲームです。\nプレイヤーはタイピングによってカードを発動し、瞬時の判断と入力精度で戦況を制御します。\nプロジェクトはクリーンアーキテクチャとドメイン駆動設計を採用し、Unityのライフサイクルからロジックを分離。カードシステム、ゲームループ、アニメーション、アセット管理を疎結合に設計することで、高い拡張性・保守性を備えたゲームアーキテクチャを実現しています。"
@@ -10,8 +12,6 @@ thumbnail: "/images/SymphonyKillTheCryptos.png"
 videoUrl: "https://www.youtube.com/watch?v=lb7_VCgPxnQ"
 repoUrl: "https://github.com/HIBIKI5201/SymphonyKillTheCryptos.git"
 ---
-使用ツール：Unity, CRI Ware, VRM
-使用技術：HDRP, UI ToolKit, クリーンアーキテクチャ
 
 ### 説明
 
