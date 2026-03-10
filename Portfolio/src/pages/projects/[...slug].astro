@@ -57,7 +57,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
 
         {entry.data.thumbnail && (
             <div class="mission-hero mil-border">
-                <img src={entry.data.thumbnail} alt={entry.data.title} class="hero-image" />
+                <img src={`${baseUrl}${entry.data.thumbnail.startsWith('/') ? entry.data.thumbnail.slice(1) : entry.data.thumbnail}`} alt={entry.data.title} class="hero-image" />
             </div>
         )}
 

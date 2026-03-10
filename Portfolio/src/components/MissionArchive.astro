@@ -17,7 +17,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
                 <div class="mil-border mission-item">
                     {mission.data.thumbnail && (
                         <div class="mission-thumbnail">
-                            <img src={mission.data.thumbnail} alt={mission.data.title} loading="lazy" />
+                            <img src={`${baseUrl}${mission.data.thumbnail.startsWith('/') ? mission.data.thumbnail.slice(1) : mission.data.thumbnail}`} alt={mission.data.title} loading="lazy" />
                         </div>
                     )}
                     <div class="mission-content">
