@@ -83,6 +83,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         text-decoration: none;
         color: inherit;
         display: block;
+        min-width: 0;
     }
 
     .mission-item {
@@ -93,6 +94,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         flex-direction: row;
         gap: 0;
         overflow: hidden;
+        min-width: 0;
     }
 
     @media (max-width: 768px) {
@@ -108,6 +110,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         overflow: hidden;
         border-right: 1px solid rgba(255, 18, 18, 0.2);
         background: #000;
+        flex-shrink: 0;
     }
 
     @media (max-width: 768px) {
@@ -134,7 +137,11 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
 
     .mission-content {
         padding: 20px;
-        flex-grow: 1;
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
     }
 
     .mission-link:hover .mission-item {
@@ -171,6 +178,9 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         font-size: 1.3rem;
         margin-bottom: 10px;
         color: #fff;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .meta {
@@ -179,6 +189,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         gap: 8px;
         margin-bottom: 15px;
         font-size: 0.8rem;
+        min-width: 0;
     }
 
     .date {
@@ -191,7 +202,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         overflow: hidden;
         position: relative;
         padding: 5px 0;
-        mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+        mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
     }
 
     .tags-inner {
@@ -245,6 +256,10 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         color: var(--text-main);
         margin-bottom: 20px;
         white-space: pre-wrap;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
 
     .entry-btn {
