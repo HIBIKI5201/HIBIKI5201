@@ -29,8 +29,28 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
             <h1>{entry.data.title}</h1>
             <div class="meta">
                 <span class="label">TIMESTAMP:</span> {entry.data.date}
-                <div class="tags">
-                    {entry.data.tags.map(tag => <span class="tag">{tag}</span>)}
+                
+                <div class="spec-sheet">
+                    <div class="spec-row">
+                        <span class="spec-label">CORE STACK</span>
+                        <div class="tags">
+                            {entry.data.stack.map(s => <span class="tag stack">{s}</span>)}
+                        </div>
+                    </div>
+                    <div class="spec-row">
+                        <span class="spec-label">TECHNOLOGIES</span>
+                        <div class="tags">
+                            {entry.data.technologies.map(t => <span class="tag tech">{t}</span>)}
+                        </div>
+                    </div>
+                    {entry.data.tools && entry.data.tools.length > 0 && (
+                        <div class="spec-row">
+                            <span class="spec-label">EQUIPMENT</span>
+                            <div class="tags">
+                                {entry.data.tools.map(tool => <span class="tag tool">{tool}</span>)}
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </header>
@@ -163,18 +183,51 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
 
     .label { color: var(--accent-color); font-weight: bold; }
 
+    /* Spec Sheet Styling */
+    .spec-sheet {
+        margin-top: 25px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        background: rgba(255, 255, 255, 0.03);
+        padding: 15px;
+        border-left: 2px solid rgba(255, 18, 18, 0.3);
+    }
+
+    .spec-row {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    @media (max-width: 768px) {
+        .spec-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+        }
+    }
+
+    .spec-label {
+        font-size: 0.65rem;
+        font-weight: bold;
+        color: var(--text-sub);
+        min-width: 120px;
+        letter-spacing: 0.1em;
+    }
+
     .tags {
         display: flex;
         gap: 10px;
-        margin-top: 15px;
         flex-wrap: nowrap;
         overflow-x: auto;
-        padding-bottom: 8px;
+        padding-bottom: 4px;
         -webkit-overflow-scrolling: touch;
+        flex-grow: 1;
     }
 
-    .tags::-webkit-scrollbar { height: 3px; }
-    .tags::-webkit-scrollbar-thumb { background: rgba(255, 18, 18, 0.3); }
+    .tags::-webkit-scrollbar { height: 2px; }
+    .tags::-webkit-scrollbar-thumb { background: rgba(255, 18, 18, 0.2); }
 
     .tag {
         flex: 0 0 auto;
@@ -187,10 +240,21 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         text-transform: uppercase;
     }
 
-    .tag::before {
-        content: ":: ";
-        opacity: 0.6;
+    .tag.stack::before { content: ":: "; opacity: 0.6; }
+    
+    .tag.tech {
+        color: var(--warning-color);
+        background: rgba(255, 171, 0, 0.1);
+        border-color: rgba(255, 171, 0, 0.3);
     }
+    .tag.tech::before { content: "> "; opacity: 0.6; }
+
+    .tag.tool {
+        color: var(--text-sub);
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+    .tag.tool::before { content: "+ "; opacity: 0.6; }
 
     .mission-hero {
         margin-bottom: 30px;

@@ -29,7 +29,9 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
                         <div class="meta">
                             <span class="date">{mission.data.date}</span>
                             <div class="tags">
-                                {mission.data.tags.map(tag => <span class="tag">{tag}</span>)}
+                                {mission.data.stack.map(s => <span class="tag stack">{s}</span>)}
+                                {mission.data.technologies.map(t => <span class="tag tech">{t}</span>)}
+                                {mission.data.tools && mission.data.tools.map(tool => <span class="tag tool">{tool}</span>)}
                             </div>
                         </div>
                         <p class="desc">{mission.data.description}</p>
@@ -207,10 +209,21 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         letter-spacing: 0.05em;
     }
 
-    .tag::before {
-        content: ":: ";
-        opacity: 0.6;
+    .tag.stack::before { content: ":: "; opacity: 0.6; }
+    
+    .tag.tech {
+        color: var(--warning-color);
+        background: rgba(255, 171, 0, 0.1);
+        border-color: rgba(255, 171, 0, 0.3);
     }
+    .tag.tech::before { content: "> "; opacity: 0.6; }
+
+    .tag.tool {
+        color: var(--text-sub);
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+    .tag.tool::before { content: "+ "; opacity: 0.6; }
 
     .desc {
         font-size: 0.9rem;
