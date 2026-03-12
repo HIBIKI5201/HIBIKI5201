@@ -28,14 +28,15 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
 
 <style is:global>
 	:root {
-		--bg-color: #0f0a0a;
-		--panel-color: #1a1414;
-		--accent-color: #ff3a3a; /* より明るい赤に変更 */
-		--warning-color: #ff8c00;
-		--text-main: #ffffff;    /* 白に変更 */
-		--text-sub: #c9b0b0;    /* より明るい色に変更 */
-		--military-red: #5e1919;
-		--border-style: 1px solid rgba(255, 58, 58, 0.4);
+		--bg-color: #0a050a; /* より深い黒 */
+		--panel-color: #140a14;
+		--accent-color: #bc4cff; /* エンダーマンの目のような鮮やかな紫 */
+		--accent-glow: #e0aaff;  /* 発光用の明るい紫 */
+		--warning-color: #ff4cff; /* マゼンタ */
+		--text-main: #ffffff;
+		--text-sub: #b0a0b0;
+		--military-purple: #3e195e; /* 赤から紫へ */
+		--border-style: 1px solid rgba(188, 76, 255, 0.4);
 	}
 
 	html, body {
@@ -52,8 +53,8 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
 
 	body {
 		background-image: 
-			linear-gradient(rgba(255, 58, 58, 0.05) 1px, transparent 1px),
-			linear-gradient(90deg, rgba(255, 58, 58, 0.05) 1px, transparent 1px);
+			linear-gradient(rgba(188, 76, 255, 0.05) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(188, 76, 255, 0.05) 1px, transparent 1px);
 		background-size: 40px 40px;
 	}
 
@@ -63,11 +64,11 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
 		left: 0;
 		width: 100%;
 		height: 100%;
-		background: linear-gradient(rgba(18, 10, 10, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(255, 140, 0, 0.02), rgba(255, 0, 0, 0.06));
+		background: linear-gradient(rgba(10, 5, 10, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(188, 76, 255, 0.04), rgba(255, 76, 255, 0.02), rgba(188, 76, 255, 0.04));
 		background-size: 100% 4px, 3px 100%;
 		pointer-events: none;
 		z-index: 100;
-		opacity: 0.2;
+		opacity: 0.3;
 	}
 
 	h1, h2, h3 {
@@ -139,7 +140,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
 	}
 
 	::-webkit-scrollbar-thumb {
-		background: var(--military-red);
+		background: var(--military-purple);
 		border: 1px solid var(--accent-color);
 	}
 </style>
