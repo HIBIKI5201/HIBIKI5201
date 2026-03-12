@@ -1,16 +1,33 @@
 ---
+import { getCollection } from "astro:content";
+
+const records = await getCollection("trackrecords");
+// 日付で昇順（古い順）にソート
+records.sort((a, b) => a.data.date.localeCompare(b.data.date));
+
+let baseUrl = import.meta.env.BASE_URL;
+if (!baseUrl.endsWith("/")) baseUrl += "/";
 ---
 <section class="track-record">
     <h2 class="section-title">Operational Excellence <small>// TRACK RECORD</small></h2>
-    <div class="records">
-        <div class="mil-border record-entry">
-            <div class="category">AWARD</div>
-            <div class="content">受賞歴・実績などをここに記載</div>
-        </div>
-        <div class="mil-border record-entry">
-            <div class="category">TALK</div>
-            <div class="content">登壇歴などをここに記載</div>
-        </div>
+    <div class="record-list">
+        {records.map((record) => (
+            <div class="mil-border record-item">
+                {record.data.image && (
+                    <div class="record-image">
+                        <img src={`${baseUrl}${record.data.image.startsWith('/') ? record.data.image.slice(1) : record.data.image}`} alt={record.data.title} />
+                    </div>
+                )}
+                <div class="record-content">
+                    <div class="record-meta">
+                        <span class="date">{record.data.date}</span>
+                        <span class="grantor">{record.data.grantor}</span>
+                    </div>
+                    <h3 class="record-title">{record.data.title}</h3>
+                    <p class="record-description">{record.data.description}</p>
+                </div>
+            </div>
+        ))}
     </div>
 </section>
 
@@ -28,23 +45,83 @@
         color: var(--text-sub);
     }
 
-    .records {
+    .record-list {
         display: flex;
         flex-direction: column;
-        gap: 20px;
+        gap: 25px;
     }
 
-    .record-entry {
+    .record-item {
         display: flex;
         gap: 20px;
-        align-items: center;
+        background: rgba(20, 10, 20, 0.6);
+        overflow: hidden;
     }
 
-    .category {
+    @media (max-width: 768px) {
+        .record-item {
+            flex-direction: column;
+            gap: 0;
+        }
+    }
+
+    .record-image {
+        width: 200px;
+        min-width: 200px;
+        height: auto;
+        border-right: 1px solid rgba(188, 76, 255, 0.2);
+        background: #000;
+    }
+
+    @media (max-width: 768px) {
+        .record-image {
+            width: 100%;
+            height: 150px;
+            border-right: none;
+            border-bottom: 1px solid rgba(188, 76, 255, 0.2);
+        }
+    }
+
+    .record-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.8;
+    }
+
+    .record-content {
+        padding: 20px;
+        flex: 1;
+    }
+
+    .record-meta {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        font-size: 0.85rem;
+    }
+
+    .date {
+        color: var(--accent-glow);
+        font-family: monospace;
         font-weight: bold;
-        color: var(--accent-color);
-        min-width: 120px;
+    }
+
+    .grantor {
+        color: var(--text-sub);
         text-transform: uppercase;
         letter-spacing: 1px;
+    }
+
+    .record-title {
+        font-size: 1.2rem;
+        color: #fff;
+        margin-bottom: 10px;
+    }
+
+    .record-description {
+        font-size: 0.95rem;
+        color: var(--text-main);
+        line-height: 1.6;
     }
 </style>
