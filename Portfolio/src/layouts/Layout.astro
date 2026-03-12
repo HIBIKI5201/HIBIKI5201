@@ -1,4 +1,5 @@
 ---
+import Header from "../components/Header.astro";
 const { title = "八幡拓音 - Portfolio" } = Astro.props;
 let baseUrl = import.meta.env.BASE_URL; // "/HIBIKI5201/" になります
 if (!baseUrl.endsWith("/")) baseUrl += "/";
@@ -17,6 +18,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
 		<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&family=Oxanium:wght@300;400;700&display=swap" rel="stylesheet">
 	</head>
 	<body>
+		<Header />
 		<div class="overlay"></div>
 		<main>
 			<slot />
@@ -28,12 +30,12 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
 	:root {
 		--bg-color: #0f0a0a;
 		--panel-color: #1a1414;
-		--accent-color: #ff1212;
+		--accent-color: #ff3a3a; /* より明るい赤に変更 */
 		--warning-color: #ff8c00;
-		--text-main: #e0e0e0;
-		--text-sub: #a08888;
+		--text-main: #ffffff;    /* 白に変更 */
+		--text-sub: #c9b0b0;    /* より明るい色に変更 */
 		--military-red: #5e1919;
-		--border-style: 1px solid rgba(255, 18, 18, 0.3);
+		--border-style: 1px solid rgba(255, 58, 58, 0.4);
 	}
 
 	html, body {
@@ -45,12 +47,13 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
 		color: var(--text-main);
 		font-family: "JetBrains Mono", monospace;
 		overflow-x: hidden;
+		scroll-behavior: smooth;
 	}
 
 	body {
 		background-image: 
-			linear-gradient(rgba(255, 18, 18, 0.05) 1px, transparent 1px),
-			linear-gradient(90deg, rgba(255, 18, 18, 0.05) 1px, transparent 1px);
+			linear-gradient(rgba(255, 58, 58, 0.05) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(255, 58, 58, 0.05) 1px, transparent 1px);
 		background-size: 40px 40px;
 	}
 
@@ -77,7 +80,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
 	main {
 		max-width: 1000px;
 		margin: 0 auto;
-		padding: 40px 20px;
+		padding: 100px 20px 40px; /* 上部パディングを増やしてヘッダーとの重なりを回避 */
 		position: relative;
 		z-index: 1;
 	}

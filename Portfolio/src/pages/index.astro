@@ -3,17 +3,19 @@ import Layout from "../layouts/Layout.astro";
 import Hero from "../components/Hero.astro";
 import Profile from "../components/Profile.astro";
 import MissionArchive from "../components/MissionArchive.astro";
+import TrackRecord from "../components/TrackRecord.astro";
 import Career from "../components/Career.astro";
 import Deployment from "../components/Deployment.astro";
 import Footer from "../components/Footer.astro";
 ---
 
 <Layout>
-	<Hero />
-	<Profile />
-	<MissionArchive />
-	<Career />
-	<Deployment />
+	<div id="hero"><Hero /></div>
+	<div id="profile"><Profile /></div>
+	<div id="missionarchive"><MissionArchive /></div>
+	<TrackRecord />
+	<div id="career"><Career /></div>
+	<div id="deployment"><Deployment /></div>
 	<Footer />
 </Layout>
 
