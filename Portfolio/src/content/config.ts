@@ -9,7 +9,7 @@ const projects = defineCollection({
     stack: z.array(z.string()),
     technologies: z.array(z.string()),
     tools: z.array(z.string()).optional(),
-    status: z.enum(['ACTIVE', 'COMPLETED', 'ARCHIVED']),
+    productionType: z.enum(['SOLO', 'TEAM', 'OTHER']),
     isPickup: z.boolean().default(false),
     description: z.string(),
     overview: z.string().optional(),

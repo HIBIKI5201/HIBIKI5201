@@ -25,8 +25,12 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
                         <div class="mission-content">
                             <div class="mission-header">
                                 <span class="id">{mission.data.projectCode}</span>
-                                <span class={`status ${mission.data.status.toLowerCase()}`}>{mission.data.status}</span>
+                                <span class={`type ${mission.data.productionType.toLowerCase()}`}>
+                                    {mission.data.productionType === 'SOLO' ? 'Solo' : 
+                                     mission.data.productionType === 'TEAM' ? 'Team' : 'Other'}
+                                </span>
                             </div>
+
                             <h3>{mission.data.title}</h3>
                             <div class="meta">
                                 <span class="date">{mission.data.date}</span>
@@ -170,15 +174,17 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         padding: 2px 8px;
     }
 
-    .status {
+    .type {
         padding: 2px 8px;
         border-radius: 2px;
         color: #fff;
+        font-size: 0.7rem;
+        font-weight: bold;
     }
 
-    .status.active { background: var(--accent-color); }
-    .status.completed { background: #5e195e; }
-    .status.archived { background: #444; }
+    .type.solo { background: var(--military-purple); border: 1px solid var(--accent-color); }
+    .type.team { background: #1e90ff; border: 1px solid #fff; }
+    .type.other { background: #444; }
 
     h3 {
         font-size: 1.3rem;
