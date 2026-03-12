@@ -20,4 +20,15 @@ const projects = defineCollection({
   }),
 });
 
-export const collections = { projects };
+const trackrecords = defineCollection({
+  type: 'content',
+  schema: z.object({
+    date: z.string(), // YYYY-MM-DD or similar for sorting
+    title: z.string(),
+    description: z.string(),
+    grantor: z.string(), // 授賞元
+    image: z.string().optional(),
+  }),
+});
+
+export const collections = { projects, trackrecords };
