@@ -1,68 +1,66 @@
 ---
 import { getCollection } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
 
-const missions = await getCollection("projects", ({ data }) => {
-    return data.isPickup === true;
-});
+const missions = await getCollection("projects");
 missions.sort((a, b) => b.data.date.localeCompare(a.data.date));
 
 let baseUrl = import.meta.env.BASE_URL;
 if (!baseUrl.endsWith("/")) baseUrl += "/";
 ---
 
-<section class="mission-archive">
-    <h2 class="section-title">PICKUP MISSIONS <small>// FEATURED PROJECTS</small></h2>
-    
-    <div class="mission-grid">
-        {missions.map((mission) => (
-            <a href={`${baseUrl}projects/${mission.slug}/`} class="mission-link">
-                <div class="mil-border mission-item">
-                    {mission.data.thumbnail && (
-                        <div class="mission-thumbnail">
-                            <img src={`${baseUrl}${mission.data.thumbnail.startsWith('/') ? mission.data.thumbnail.slice(1) : mission.data.thumbnail}`} alt={mission.data.title} loading="lazy" />
-                        </div>
-                    )}
-                    <div class="mission-content">
-                        <div class="mission-header">
-                            <span class="id">{mission.data.projectCode}</span>
-                            <span class={`status ${mission.data.status.toLowerCase()}`}>{mission.data.status}</span>
-                        </div>
-                        <h3>{mission.data.title}</h3>
-                        <div class="meta">
-                            <span class="date">{mission.data.date}</span>
-                            <div class="tags-container">
-                                <div class="tags-inner">
-                                    {[...Array(2)].map(() => (
-                                        <>
-                                            {mission.data.stack.map(s => <span class="tag stack">{s}</span>)}
-                                            {mission.data.technologies.map(t => <span class="tag tech">{t}</span>)}
-                                            {mission.data.tools && mission.data.tools.map(tool => <span class="tag tool">{tool}</span>)}
-                                        </>
-                                    ))}
+<Layout title="Project Archive - 八幡拓音">
+    <section class="mission-archive">
+        <h2 class="section-title">MISSION ARCHIVE <small>// ALL GAME PROJECTS</small></h2>
+        
+        <div class="mission-grid">
+            {missions.map((mission) => (
+                <a href={`${baseUrl}projects/${mission.slug}/`} class="mission-link">
+                    <div class="mil-border mission-item">
+                        {mission.data.thumbnail && (
+                            <div class="mission-thumbnail">
+                                <img src={`${baseUrl}${mission.data.thumbnail.startsWith('/') ? mission.data.thumbnail.slice(1) : mission.data.thumbnail}`} alt={mission.data.title} loading="lazy" />
+                            </div>
+                        )}
+                        <div class="mission-content">
+                            <div class="mission-header">
+                                <span class="id">{mission.data.projectCode}</span>
+                                <span class={`status ${mission.data.status.toLowerCase()}`}>{mission.data.status}</span>
+                            </div>
+                            <h3>{mission.data.title}</h3>
+                            <div class="meta">
+                                <span class="date">{mission.data.date}</span>
+                                <div class="tags-container">
+                                    <div class="tags-inner">
+                                        {[...Array(2)].map(() => (
+                                            <>
+                                                {mission.data.stack.map(s => <span class="tag stack">{s}</span>)}
+                                                {mission.data.technologies.map(t => <span class="tag tech">{t}</span>)}
+                                                {mission.data.tools && mission.data.tools.map(tool => <span class="tag tool">{tool}</span>)}
+                                            </>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
+                            <p class="desc">{mission.data.description}</p>
+                            <div class="entry-btn">ENTRY LOG ACCESS >></div>
                         </div>
-                        <p class="desc">{mission.data.description}</p>
-                        <div class="entry-btn">ENTRY LOG ACCESS >></div>
                     </div>
-                </div>
-            </a>
-        ))}
-    </div>
+                </a>
+            ))}
+        </div>
 
-    <div class="archive-link-container">
-        <a href={`${baseUrl}projects/`} class="btn-archive">
-            VIEW ALL MISSIONS <span class="icon">>></span>
-        </a>
-    </div>
-</section>
+        <div class="back-home">
+            <a href={baseUrl} class="btn-back">
+                <span class="icon"><<</span> RETURN TO HQ
+            </a>
+        </div>
+    </section>
+</Layout>
 
 <style>
     .mission-archive {
-        margin: 120px 0;
-        padding: 40px 0;
-        border-top: 1px solid rgba(188, 76, 255, 0.2);
-        border-bottom: 1px solid rgba(188, 76, 255, 0.2);
+        margin: 40px 0;
     }
 
     .section-title {
@@ -287,26 +285,25 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         color: #fff;
     }
 
-    .archive-link-container {
-        margin-top: 50px;
-        text-align: right;
+    .back-home {
+        margin-top: 60px;
+        text-align: center;
     }
 
-    .btn-archive {
+    .btn-back {
         display: inline-block;
-        padding: 10px 20px;
+        padding: 15px 30px;
         border: 1px solid var(--accent-color);
         color: var(--accent-color);
         font-weight: bold;
         text-decoration: none;
         transition: all 0.3s ease;
         font-family: "Oxanium", sans-serif;
-        font-size: 0.9rem;
     }
 
-    .btn-archive:hover {
+    .btn-back:hover {
         background: var(--accent-color);
         color: #fff;
-        box-shadow: 0 0 15px var(--accent-color);
+        box-shadow: 0 0 20px var(--accent-color);
     }
 </style>

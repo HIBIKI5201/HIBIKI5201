@@ -6,6 +6,7 @@ stack: ["Unity", "C#"]
 technologies: ["URP", "LipSync", "Quantize", " Editor Extension(Window, Asset Post Processor)"]
 tools: ["CRI Ware", "MagicaCloth2", "uLipSync", "UniTask", "UniR3", "DOTween"]
 status: "COMPLETED"
+isPickup: true
 description: "バンダイナムコとの産学連携プロジェクトでリズムゲームを制作しTGSに出展"
 overview: "「BEAT-KEEPER」は、音楽のビートに合わせて展開するリズムアクションゲームです。\nプレイヤーの操作、敵AI、エフェクト、カメラワーク、UIなどを統合し、音楽とゲームプレイが一体となったテンポの良いバトル体験を目指しています。\nDOTween や Cinemachine を活用した演出に加え、独自のゲーム管理システム「SymphonyFramework」によって、リズムに合わせたダイナミックなゲーム進行を実現しています。"
 thumbnail: "/images/BeatKeeper.webp"

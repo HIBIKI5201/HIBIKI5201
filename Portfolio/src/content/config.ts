@@ -10,6 +10,7 @@ const projects = defineCollection({
     technologies: z.array(z.string()),
     tools: z.array(z.string()).optional(),
     status: z.enum(['ACTIVE', 'COMPLETED', 'ARCHIVED']),
+    isPickup: z.boolean().default(false),
     description: z.string(),
     overview: z.string().optional(),
     thumbnail: z.string().optional(),
