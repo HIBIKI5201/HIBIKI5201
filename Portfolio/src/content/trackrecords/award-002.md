@@ -1,7 +1,7 @@
 ---
-date: "2025-02-17"
-title: "学内優秀賞（マスター版発表）"
-description: "就活作品としての完成度と、独自のアーキテクチャ設計が高く評価された。"
+date: "2025-02-13"
+title: "1年次後期 審査会　優秀賞"
+description: ""
 grantor: "バンタンゲームアカデミー"
-image: "/images/SymphonyKillTheCryptos.png"
+image: "/images/record/1年次後期 審査会　優秀賞.png"
 ---
