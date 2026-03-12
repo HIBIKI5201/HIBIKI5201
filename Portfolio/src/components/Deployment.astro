@@ -1,7 +1,7 @@
 ---
 ---
 <section class="deployment">
-    <h2 class="section-title">Links & Resources <small>// SOCIALS</small></h2>
+    <h2 class="section-title">LINKS <small>// SOCIALS</small></h2>
     <div class="grid-links">
         <a href="https://x.com/HIBIKI_5201dev" target="_blank" class="mil-border link-item">
             <svg viewBox="0 0 24 24" fill="currentColor" class="icon"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
@@ -50,10 +50,12 @@
     }
 
     .grid-links {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        display: flex;
+        flex-wrap: wrap;
         gap: 15px;
         justify-content: center;
+        max-width: 900px;
+        margin: 0 auto;
     }
 
     .link-item {
@@ -61,7 +63,8 @@
         align-items: center;
         justify-content: center;
         gap: 10px;
-        padding: 15px;
+        padding: 15px 25px;
+        min-width: 180px;
         font-weight: bold;
         background: rgba(26, 20, 20, 0.6);
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -87,6 +90,10 @@
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 20px;
+        justify-content: center;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     .major-link {
