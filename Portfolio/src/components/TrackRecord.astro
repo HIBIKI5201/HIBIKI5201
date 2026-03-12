@@ -9,7 +9,7 @@ let baseUrl = import.meta.env.BASE_URL;
 if (!baseUrl.endsWith("/")) baseUrl += "/";
 ---
 <section class="track-record">
-    <h2 class="section-title">Operational Excellence <small>// TRACK RECORD</small></h2>
+    <h2 class="section-title">Achievements <small>// TRACK RECORD</small></h2>
     <div class="record-list">
         {records.map((record) => (
             <div 
@@ -33,7 +33,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
                     <h3 class="record-title">{record.data.title}</h3>
                     <p class="record-description">{record.data.description}</p>
                 </div>
-                <div class="click-hint">VIEW INTEL >></div>
+                <div class="click-hint">VIEW DETAILS >></div>
             </div>
         ))}
     </div>

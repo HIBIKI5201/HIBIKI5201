@@ -11,7 +11,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
 ---
 
 <section class="mission-archive">
-    <h2 class="section-title">PICKUP MISSIONS <small>// FEATURED PROJECTS</small></h2>
+    <h2 class="section-title">FEATURED PROJECTS <small>// PICKUP</small></h2>
     
     <div class="mission-grid">
         {missions.map((mission) => (
@@ -46,7 +46,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
                             </div>
                         </div>
                         <p class="desc">{mission.data.description}</p>
-                        <div class="entry-btn">ENTRY LOG ACCESS >></div>
+                        <div class="entry-btn">VIEW PROJECT DETAILS >></div>
                     </div>
                 </div>
             </a>
@@ -55,7 +55,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
 
     <div class="archive-link-container">
         <a href={`${baseUrl}projects/`} class="btn-archive">
-            VIEW ALL MISSIONS <span class="icon">>></span>
+            VIEW ALL PROJECTS <span class="icon">>></span>
         </a>
     </div>
 </section>

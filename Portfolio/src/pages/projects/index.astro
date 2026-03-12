@@ -11,7 +11,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
 
 <Layout title="Project Archive - 八幡拓音">
     <section class="mission-archive">
-        <h2 class="section-title">MISSION ARCHIVE <small>// ALL GAME PROJECTS</small></h2>
+        <h2 class="section-title">PROJECT ARCHIVE <small>// ALL PROJECTS</small></h2>
         
         <div class="mission-grid">
             {missions.map((mission) => (
@@ -47,7 +47,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
                                 </div>
                             </div>
                             <p class="desc">{mission.data.description}</p>
-                            <div class="entry-btn">ENTRY LOG ACCESS >></div>
+                            <div class="entry-btn">VIEW DETAILS >></div>
                         </div>
                     </div>
                 </a>
@@ -56,7 +56,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
 
         <div class="back-home">
             <a href={baseUrl} class="btn-back">
-                <span class="icon"><<</span> RETURN TO HQ
+                <span class="icon"><<</span> RETURN TO HOME
             </a>
         </div>
     </section>

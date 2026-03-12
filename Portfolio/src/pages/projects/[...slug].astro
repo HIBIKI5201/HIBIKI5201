@@ -17,9 +17,9 @@ let baseUrl = import.meta.env.BASE_URL;
 if (!baseUrl.endsWith("/")) baseUrl += "/";
 ---
 
-<Layout title={`${entry.data.title} - MISSION DETAILS`}>
+<Layout title={`${entry.data.title} - PROJECT DETAILS`}>
     <div class="mission-detail-container">
-        <a href={baseUrl} class="back-btn"><< RETURN TO HQ (HOME)</a>
+        <a href={baseUrl} class="back-btn"><< RETURN TO HOME</a>
         
         <header class="mil-border detail-header">
             <div class="header-top">
@@ -31,7 +31,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
             </div>
             <h1>{entry.data.title}</h1>
             <div class="meta">
-                <span class="label">TIMESTAMP:</span> {entry.data.date}
+                <span class="label">DATE:</span> {entry.data.date}
                 
                 <div class="spec-sheet">
                     <div class="spec-row">
@@ -48,7 +48,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
                     </div>
                     {entry.data.tools && entry.data.tools.length > 0 && (
                         <div class="spec-row">
-                            <span class="spec-label">EQUIPMENT</span>
+                            <span class="spec-label">TOOLS & LIBRARIES</span>
                             <div class="tags">
                                 {entry.data.tools.map(tool => <span class="tag tool">{tool}</span>)}
                             </div>
@@ -67,7 +67,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         <section class="mil-border intel-module">
             <div class="intel-grid">
                 <div class="intel-main">
-                    <div class="asset-label">// MISSION OVERVIEW</div>
+                    <div class="asset-label">// PROJECT OVERVIEW</div>
                     <div class="overview-content">
                         {entry.data.overview || entry.data.description}
                     </div>
@@ -77,18 +77,18 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
                     <div class="intel-side">
                         {entry.data.videoUrl && (
                             <div class="intel-asset-box">
-                                <div class="asset-label">// INTEL VIDEO</div>
+                                <div class="asset-label">// DEMO VIDEO</div>
                                 <div class="video-container">
                                     {entry.data.videoUrl.includes('youtube.com') || entry.data.videoUrl.includes('youtu.be') ? (
                                         <iframe 
                                             src={entry.data.videoUrl.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/')} 
-                                            title="Mission Intel"
+                                            title="Project Demo"
                                             frameborder="0" 
                                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                                             allowfullscreen
                                         ></iframe>
                                     ) : (
-                                        <a href={entry.data.videoUrl} target="_blank" class="asset-link-btn">WATCH VIDEO >></a>
+                                        <a href={entry.data.videoUrl} target="_blank" class="asset-link-btn">WATCH DEMO >></a>
                                     )}
                                 </div>
                             </div>
@@ -96,11 +96,11 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
 
                         {(entry.data.releaseUrl || entry.data.repoUrl) && (
                             <div class="intel-asset-box">
-                                <div class="asset-label">// OPERATIONAL LINKS</div>
+                                <div class="asset-label">// PROJECT LINKS</div>
                                 <div class="link-grid">
                                     {entry.data.releaseUrl && (
                                         <a href={entry.data.releaseUrl} target="_blank" class="asset-link-btn highlight">
-                                            LAUNCH MISSION >>
+                                            VIEW PROJECT >>
                                         </a>
                                     )}
                                     {entry.data.repoUrl && (
@@ -117,14 +117,14 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         </section>
 
         <section class="mil-border mission-body-full">
-            <div class="content-warning">ACCESSING CLASSIFIED DATA... DONE.</div>
+            <div class="content-warning">LOADING PROJECT DATA... DONE.</div>
             <div class="markdown-content">
                 <Content />
             </div>
         </section>
 
         <div class="footer-actions">
-            <a href={baseUrl} class="mil-border action-btn">CLOSE LOG</a>
+            <a href={baseUrl} class="mil-border action-btn">CLOSE DETAILS</a>
         </div>
     </div>
 </Layout>

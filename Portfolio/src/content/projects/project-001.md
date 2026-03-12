@@ -1,5 +1,5 @@
 ---
-projectCode: "MISSION-001"
+projectCode: "PROJECT-001"
 title: "Symphony Kill The Cryptos"
 date: "2025-06-01 -> 2026-2-17"
 stack: ["Unity", "C#"]
