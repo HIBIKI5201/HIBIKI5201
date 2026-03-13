@@ -1,12 +1,20 @@
 ---
 import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
 
 const records = await getCollection("trackrecords");
-// 日付で昇順（古い順）にソート
-records.sort((a, b) => a.data.date.localeCompare(b.data.date));
+// 日付で降順（新しい順）にソート
+records.sort((a, b) => b.data.date.localeCompare(a.data.date));
 
 let baseUrl = import.meta.env.BASE_URL;
 if (!baseUrl.endsWith("/")) baseUrl += "/";
+
+// 画像パスを解決するヘルパー
+const resolveImagePath = (path: string) => {
+    if (path.startsWith('http')) return path;
+    const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+    return `/${cleanPath}`;
+};
 ---
 <section class="track-record">
     <h2 class="section-title">Achievements <small>// TRACK RECORD</small></h2>
@@ -18,11 +26,18 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
                 data-date={record.data.date}
                 data-grantor={record.data.grantor}
                 data-desc={record.data.description}
-                data-image={record.data.image ? `${baseUrl}${record.data.image.startsWith('/') ? record.data.image.slice(1) : record.data.image}` : ''}
+                data-image={record.data.image ? resolveImagePath(record.data.image) : ''}
             >
                 {record.data.image && (
                     <div class="record-image">
-                        <img src={encodeURI(`${baseUrl}${record.data.image.startsWith('/') ? record.data.image.slice(1) : record.data.image}`)} alt={record.data.title} />
+                        <Image 
+                            src={resolveImagePath(record.data.image)} 
+                            alt={record.data.title}
+                            width={150}
+                            height={150}
+                            format="webp"
+                            quality="mid"
+                        />
                     </div>
                 )}
                 <div class="record-content">
