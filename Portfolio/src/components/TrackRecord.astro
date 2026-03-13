@@ -137,7 +137,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         position: relative;
         display: flex;
         gap: 20px;
-        background: rgba(20, 10, 20, 0.6);
+        background: rgba(18, 18, 18, 0.7); /* 赤みを排除し、不透明度を調整 */
         overflow: hidden;
         transition: transform 0.3s ease, background 0.3s ease;
     }
@@ -147,7 +147,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
     }
 
     .record-item.clickable:hover {
-        background: rgba(188, 76, 255, 0.1);
+        background: rgba(var(--accent-color-rgb), 0.1);
         transform: translateX(10px);
         box-shadow: -5px 0 0 var(--accent-color);
     }
@@ -163,7 +163,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         width: 150px;
         min-width: 150px;
         height: 150px; /* 1:1 ratio */
-        border-right: 1px solid rgba(188, 76, 255, 0.2);
+        border-right: 1px solid rgba(var(--accent-color-rgb), 0.2);
         background: #000;
         overflow: hidden;
     }
@@ -173,9 +173,10 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
             width: 100%;
             height: 250px;
             border-right: none;
-            border-bottom: 1px solid rgba(188, 76, 255, 0.2);
+            border-bottom: 1px solid rgba(var(--accent-color-rgb), 0.2);
         }
     }
+
 
     .record-image img {
         width: 100%;
@@ -328,7 +329,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         max-width: 500px; /* Limit size so it doesn't take over the screen */
         margin: 0 auto; /* Center horizontally */
         background: #000;
-        border-bottom: 1px solid rgba(188, 76, 255, 0.3);
+        border-bottom: 1px solid rgba(var(--accent-color-rgb), 0.3);
         display: flex;
         justify-content: center;
         align-items: center;
@@ -349,7 +350,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
     .separator {
         height: 1px;
         margin: 20px 0;
-        border-top: 1px solid rgba(188, 76, 255, 0.3);
+        border-top: 1px solid rgba(var(--accent-color-rgb), 0.3);
     }
 
     .modal-info .record-description {

@@ -61,9 +61,9 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         top: 0;
         left: 0;
         width: 100%;
-        background: rgba(15, 10, 10, 0.9);
-        backdrop-filter: blur(10px);
-        border-bottom: 1px solid var(--accent-color);
+        background: rgba(12, 12, 12, 0.95); /* 赤みを排除し、不透明度を調整 */
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(var(--accent-color-rgb), 0.3);
         z-index: 1000;
         padding: 10px 0;
     }
@@ -129,7 +129,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         top: 100%;
         left: 0;
         width: 100%;
-        background: rgba(26, 20, 20, 0.95);
+        background: rgba(18, 18, 18, 0.95);
         border-bottom: 1px solid var(--accent-color);
         padding: 20px 0;
     }

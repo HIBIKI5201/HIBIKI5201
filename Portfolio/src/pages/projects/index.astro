@@ -63,6 +63,12 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
 </Layout>
 
 <style>
+    :where(.mission-archive) {
+        --accent-color: #a070ff;
+        --accent-color-rgb: 160, 112, 255;
+        --accent-glow: #c0a0ff;
+    }
+
     .mission-archive {
         margin: 40px 0;
     }
@@ -118,7 +124,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         min-width: 300px;
         height: auto;
         overflow: hidden;
-        border-right: 1px solid rgba(188, 76, 255, 0.2);
+        border-right: 1px solid rgba(var(--accent-color-rgb), 0.2);
         background: #000;
         flex-shrink: 0;
     }
@@ -128,7 +134,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
             width: 100%;
             height: 200px;
             border-right: none;
-            border-bottom: 1px solid rgba(188, 76, 255, 0.2);
+            border-bottom: 1px solid rgba(var(--accent-color-rgb), 0.2);
         }
     }
 
@@ -155,7 +161,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
     }
 
     .mission-link:hover .mission-item {
-        background: rgba(188, 76, 255, 0.1);
+        background: rgba(var(--accent-color-rgb), 0.1);
         transform: translateX(10px);
         box-shadow: -5px 0 0 var(--accent-color);
     }
@@ -236,8 +242,8 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
     .tag {
         flex: 0 0 auto;
         color: var(--accent-color);
-        background: rgba(188, 76, 255, 0.1);
-        border: 1px solid rgba(188, 76, 255, 0.3);
+        background: rgba(var(--accent-color-rgb), 0.1);
+        border: 1px solid rgba(var(--accent-color-rgb), 0.3);
         padding: 1px 8px;
         font-size: 0.75rem;
         font-weight: bold;
@@ -250,8 +256,8 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
     
     .tag.tech {
         color: var(--accent-glow);
-        background: rgba(188, 76, 255, 0.1);
-        border-color: rgba(188, 76, 255, 0.3);
+        background: rgba(var(--accent-color-rgb), 0.1);
+        border-color: rgba(var(--accent-color-rgb), 0.3);
     }
     .tag.tech::before { content: "> "; opacity: 0.6; }
 

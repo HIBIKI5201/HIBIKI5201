@@ -28,15 +28,16 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
 
 <style is:global>
 	:root {
-		--bg-color: #0a050a; /* より深い黒 */
-		--panel-color: #140a14;
-		--accent-color: #bc4cff; /* エンダーマンの目のような鮮やかな紫 */
-		--accent-glow: #e0aaff;  /* 発光用の明るい紫 */
-		--warning-color: #ff4cff; /* マゼンタ */
-		--text-main: #ffffff;
-		--text-sub: #b0a0b0;
-		--military-purple: #3e195e; /* 赤から紫へ */
-		--border-style: 1px solid rgba(188, 76, 255, 0.4);
+		--bg-color: #0a0a0a; /* 純粋な黒に近いグレー */
+		--panel-color: #151515;
+		--accent-color: #9d4edd; /* 落ち着いた、しかし存在感のある紫 */
+		--accent-color-rgb: 157, 78, 221;
+		--accent-glow: #c77dff;
+		--warning-color: #555555; /* 警告やサブ要素はグレーで抑える */
+		--text-main: #e0e0e0;
+		--text-sub: #888888;
+		--military-purple: #1a1a1a; /* ここもモノトーンに */
+		--border-style: 1px solid rgba(var(--accent-color-rgb), 0.3);
 	}
 
 	html, body {
@@ -52,9 +53,10 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
 	}
 
 	body {
+		/* グリッドも紫を抑えて白の微かな線に */
 		background-image: 
-			linear-gradient(rgba(188, 76, 255, 0.05) 1px, transparent 1px),
-			linear-gradient(90deg, rgba(188, 76, 255, 0.05) 1px, transparent 1px);
+			linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
 		background-size: 40px 40px;
 	}
 
@@ -64,8 +66,9 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
 		left: 0;
 		width: 100%;
 		height: 100%;
-		background: linear-gradient(rgba(10, 5, 10, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(188, 76, 255, 0.04), rgba(255, 76, 255, 0.02), rgba(188, 76, 255, 0.04));
-		background-size: 100% 4px, 3px 100%;
+		/* オーバーレイの紫のグラデーションも削除し、スキャンラインのみに */
+		background: linear-gradient(rgba(10, 10, 10, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
+		background-size: 100% 4px;
 		pointer-events: none;
 		z-index: 100;
 		opacity: 0.3;
@@ -81,7 +84,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
 	main {
 		max-width: 1000px;
 		margin: 0 auto;
-		padding: 100px 20px 40px; /* 上部パディングを増やしてヘッダーとの重なりを回避 */
+		padding: 100px 20px 40px;
 		position: relative;
 		z-index: 1;
 	}
@@ -90,7 +93,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
 		border: var(--border-style);
 		padding: 20px;
 		position: relative;
-		background: rgba(26, 20, 20, 0.8);
+		background: rgba(18, 18, 18, 0.9); /* 赤み(26,20,20)を排除 */
 		backdrop-filter: blur(4px);
 	}
 
