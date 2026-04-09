@@ -174,9 +174,9 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         font-weight: bold;
         color: #fff;
     }
-    .type.solo { background: var(--military-purple); border: 1px solid var(--accent-color); box-shadow: 0 0 10px rgba(var(--accent-color-rgb), 0.3); }
-    .type.team { background: #1e90ff; border: 1px solid #fff; }
-    .type.other { background: #444; }
+    .type.solo { background: var(--military-purple); border: 1px solid var(--accent-color); color: var(--accent-color); }
+    .type.team { background: var(--accent-color); color: #000; border: 1px solid var(--accent-glow); }
+    .type.other { background: #333; border: 1px solid #666; color: #fff; }
 
     h1 {
         font-size: 2.5rem;
@@ -392,8 +392,9 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
 
     .asset-link-btn.highlight {
         background: var(--accent-color);
-        color: #fff;
+        color: var(--bg-color);
         border-color: var(--accent-color);
+        font-weight: 800;
     }
 
     .asset-link-btn.highlight:hover {
