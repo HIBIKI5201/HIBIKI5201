@@ -10,10 +10,10 @@ let baseUrl = import.meta.env.BASE_URL;
 if (!baseUrl.endsWith("/")) baseUrl += "/";
 
 // 画像パスを解決するヘルパー
-const resolveImagePath = (path: string) => {
+const resolveImagePath = (path?: string) => {
+    if (!path) return '';
     if (path.startsWith('http')) return path;
     const cleanPath = path.startsWith('/') ? path.slice(1) : path;
-    // baseUrlを考慮したフルパスを返す
     return `${baseUrl}${cleanPath}`;
 };
 ---
@@ -49,7 +49,7 @@ const resolveImagePath = (path: string) => {
                     <h3 class="record-title">{record.data.title}</h3>
                     <p class="record-description">{record.data.description}</p>
                 </div>
-                <div class="click-hint">VIEW DETAILS >></div>
+                <div class="click-hint">VIEW DETAILS</div>
             </div>
         ))}
     </div>
@@ -87,13 +87,13 @@ const resolveImagePath = (path: string) => {
     const mDesc = document.getElementById('modal-desc');
     const mImageContainer = document.getElementById('modal-image-container');
 
-    const openModal = (data) => {
+    const openModal = (data: ModalData) => {
         if (!modal || !mTitle || !mDate || !mGrantor || !mDesc || !mImageContainer) return;
         
-        mTitle.textContent = data.title;
-        mDate.textContent = data.date;
-        mGrantor.textContent = data.grantor;
-        mDesc.textContent = data.desc;
+        mTitle.textContent   = data.title   ?? null;
+        mDate.textContent    = data.date    ?? null;
+        mGrantor.textContent = data.grantor ?? null;
+        mDesc.textContent    = data.desc    ?? null;
         
         if (data.image) {
             // Encode the path to handle Japanese characters/spaces
@@ -127,6 +127,14 @@ const resolveImagePath = (path: string) => {
     window.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') closeModal();
     });
+
+    type ModalData = {
+    title?: string;
+    date?: string;
+    grantor?: string;
+    desc?: string;
+    image?: string;
+    };
 </script>
 
 <style>
@@ -330,7 +338,7 @@ const resolveImagePath = (path: string) => {
         transition: all 0.3s ease;
         border-radius: 50%;
         line-height: 1;
-        padding-bottom: 4px; /* Adjust X alignment */
+        padding-bottom: 4px;
     }
 
     .modal-close:hover {
@@ -341,9 +349,8 @@ const resolveImagePath = (path: string) => {
 
     .modal-image {
         width: 100%;
-        aspect-ratio: 1 / 1; /* Force 1:1 ratio */
-        max-width: 500px; /* Limit size so it doesn't take over the screen */
-        margin: 0 auto; /* Center horizontally */
+        max-height: 60vh;
+        margin: 0 auto;
         background: #000;
         border-bottom: 1px solid rgba(var(--accent-color-rgb), 0.3);
         display: flex;
@@ -353,10 +360,12 @@ const resolveImagePath = (path: string) => {
     }
 
     .modal-image img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain; /* Show the whole image inside the square */
-        display: block;
+    max-width: 100%;
+    max-height: 60vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    max-width: min(100%, 100vw);
     }
 
     .modal-info {
@@ -370,7 +379,7 @@ const resolveImagePath = (path: string) => {
     }
 
     .modal-info .record-description {
-        display: block; /* Show full text */
+        display: block;
         -webkit-line-clamp: unset;
         font-size: 1rem;
         line-height: 1.8;
