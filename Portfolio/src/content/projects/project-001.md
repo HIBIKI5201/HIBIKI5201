@@ -7,17 +7,19 @@ technologies: ["Clean Architecture", "DDD", "HDRP", "UI ToolKit"]
 tools: ["CRI Ware LE", "VRM", Blender]
 productionType: "SOLO"
 isPickup: true
-description: "1年掛けて個人制作した、ハイスピードタイピングカードゲーム"
-overview: | 
-    「SymphonyKillTheCryptos」は、タイピング操作とカードバトルを融合させたハイスピード戦略ゲームです。
-    プレイヤーはタイピングによってカードを発動し、瞬時の判断と入力精度で戦況を制御します。
-    プロジェクトはクリーンアーキテクチャとドメイン駆動設計を採用し、Unityのライフサイクルからロジックを分離。カードシステム、ゲームループ、アニメーション、アセット管理を疎結合に設計することで、高い拡張性・保守性を備えたゲームアーキテクチャを実現しています。
+description: "2年次に個人制作した、ハイスピードタイピングカードゲーム"
 thumbnail: "/images/project/SymphonyKillTheCryptos.png"
 videoUrl: "https://www.youtube.com/watch?v=lb7_VCgPxnQ"
 repoUrl: "https://github.com/HIBIKI5201/SymphonyKillTheCryptos.git"
 ---
 
-### 説明
+## overview
+
+「SymphonyKillTheCryptos」は、タイピング操作とカードバトルを融合させたハイスピード戦略ゲームです。
+プレイヤーはタイピングによってカードを発動し、瞬時の判断と入力精度で戦況を制御します。
+プロジェクトはクリーンアーキテクチャとドメイン駆動設計を採用し、Unityのライフサイクルからロジックを分離。カードシステム、ゲームループ、アニメーション、アセット管理を疎結合に設計することで、高い拡張性・保守性を備えたゲームアーキテクチャを実現しています。
+
+# 説明
 
 プログラマー専攻二年次の5月から2月までの一年間掛けて制作する就活作品として開発したタイピングカードゲームです。
 
@@ -27,7 +29,7 @@ repoUrl: "https://github.com/HIBIKI5201/SymphonyKillTheCryptos.git"
 
 ホームではデッキを構成したり、ストーリーを読む機能があります。
 
-### アピールポイント
+# アピールポイント
 
 今作は制作に対して三つの目標を立てました。
 

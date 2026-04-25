@@ -1,6 +1,11 @@
 ---
 import { getCollection } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
+import { unified } from "unified";
+import remarkParse from "remark-parse";
+import remarkGfm from "remark-gfm";
+import remarkRehype from "remark-rehype";
+import rehypeStringify from "rehype-stringify";
 
 export async function getStaticPaths() {
   const missions = await getCollection("projects");
@@ -11,6 +16,38 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await entry.render();
+const slug = Array.isArray(entry.slug) ? entry.slug.join("/") : entry.slug;
+const projectFiles = import.meta.glob("../../content/projects/*.md", { as: "raw", eager: true });
+const projectPath = `../../content/projects/${slug}.md`;
+const markdownSource = projectFiles[projectPath];
+if (!markdownSource) {
+  throw new Error(`Project markdown not found: ${projectPath}`);
+}
+const markdownBody = markdownSource.replace(/^---[\s\S]*?---\s*/m, "");
+const overviewMatch = markdownBody.match(/^##\s*overview\s*[\r\n]+([\s\S]*?)(?=^#{1,6}\s|\z)/im);
+const overviewMarkdown = overviewMatch ? overviewMatch[1].trim() : "";
+const bodyMarkdown = overviewMarkdown
+  ? markdownBody.replace(/^##\s*overview\s*[\r\n]+[\s\S]*?(?=^#{1,6}\s|\z)/im, "").trim()
+  : markdownBody;
+
+async function renderMd(source: string) {
+  return String(await unified()
+    .use(remarkParse)
+    .use(remarkGfm)
+    .use(remarkRehype, { allowDangerousHtml: true })
+    .use(rehypeStringify, { allowDangerousHtml: true })
+    .process(source));
+}
+
+const overviewHtml = overviewMarkdown
+  ? await renderMd(overviewMarkdown)
+  : entry.data.overview
+    ? await renderMd(entry.data.overview)
+    : "";
+const descriptionHtml = entry.data.description
+  ? await renderMd(entry.data.description)
+  : "";
+const bodyHtml = bodyMarkdown ? await renderMd(bodyMarkdown) : "";
 
 // BASE_URLの末尾に / があるかを確認し、無ければ付けます
 let baseUrl = import.meta.env.BASE_URL;
@@ -19,7 +56,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
 
 <Layout title={`${entry.data.title} - PROJECT DETAILS`}>
     <div class="mission-detail-container">
-        <a href={baseUrl} class="back-btn"><< RETURN TO HOME</a>
+        <a href={baseUrl} class="back-btn">&lt;&lt; RETURN TO HOME</a>
         
         <header class="mil-border detail-header">
             <div class="header-top">
@@ -30,6 +67,9 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
                 </span>
             </div>
             <h1>{entry.data.title}</h1>
+            {descriptionHtml && (
+                <div class="project-description" set:html={descriptionHtml}></div>
+            )}
             <div class="meta">
                 <span class="label">DATE:</span> {entry.data.date}
                 
@@ -68,9 +108,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
             <div class="intel-grid">
                 <div class="intel-main">
                     <div class="asset-label">// PROJECT OVERVIEW</div>
-                    <div class="overview-content">
-                        {entry.data.overview || entry.data.description}
-                    </div>
+                    <div class="overview-content" set:html={overviewHtml}></div>
                 </div>
 
                 {(entry.data.videoUrl || entry.data.releaseUrl || entry.data.repoUrl) && (
@@ -119,7 +157,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         <section class="mil-border mission-body-full">
             <div class="content-warning">LOADING PROJECT DATA... DONE.</div>
             <div class="markdown-content">
-                <Content />
+                {bodyHtml ? <div set:html={bodyHtml} /> : <Content />}
             </div>
         </section>
 
