@@ -1,49 +1,26 @@
 ---
 projectCode: "PROJECT-001"
-title: "Symphony Kill The Cryptos"
-date: "2025-06-01 -> 2026-2-17"
+title: "Liset VR Mission"
+date: "2024-04-24 -> 2024-05-13"
 stack: ["Unity", "C#"]
-technologies: ["Clean Architecture", "DDD", "HDRP", "UI ToolKit"]
-tools: ["CRI Ware LE", "VRM", Blender]
+technologies: ["BRP", "Particle System"]
+tools: []
 productionType: "SOLO"
-isPickup: true
-description: "2年次に個人制作した、ハイスピードタイピングカードゲーム"
-thumbnail: "/images/project/SymphonyKillTheCryptos.png"
-videoUrl: "https://www.youtube.com/watch?v=lb7_VCgPxnQ"
-repoUrl: "https://github.com/HIBIKI5201/SymphonyKillTheCryptos.git"
+isPickup: false
+description: "初めてのUnity製ゲーム制作"
+thumbnail: "/images/project/Liset VR Mission.png"
+videoUrl: "https://www.youtube.com/watch?v=aifm8BXnHR4"
+releaseUrl: "https://unityroom.com/games/lisetvrmission"
+repoUrl: "https://github.com/HIBIKI5201/LisetVRmission"
 ---
 
 ## overview
-
-「SymphonyKillTheCryptos」は、タイピング操作とカードバトルを融合させたハイスピード戦略ゲームです。
-プレイヤーはタイピングによってカードを発動し、瞬時の判断と入力精度で戦況を制御します。
-プロジェクトはクリーンアーキテクチャとドメイン駆動設計を採用し、Unityのライフサイクルからロジックを分離。カードシステム、ゲームループ、アニメーション、アセット管理を疎結合に設計することで、高い拡張性・保守性を備えたゲームアーキテクチャを実現しています。
-
+バンタン初年度のゴールデンウィーク課題のために制作した、2Dシューティングゲーム。
+壁に隠れて敵の攻撃から身を守りつつ、ライフルとグレネードを使用して敵を殲滅するシューティングゲームです。
 # 説明
-
-プログラマー専攻二年次の5月から2月までの一年間掛けて制作する就活作品として開発したタイピングカードゲームです。
-
-インゲームでは手札に書かれた文字をタイピングする事でカードのゲージが溜まり、ゲージが最大になると発動、カードの種類に応じて主人公が敵を攻撃し、撃破してウェーブを進行します。
-
-目的はウェーブを進んで最深部に辿り着く事、その前にやられるとホームに戻されます。
-
-ホームではデッキを構成したり、ストーリーを読む機能があります。
+初めてのUnityでのゲーム制作ながら、自作スクリプトを多く使用して、単純なシューティングの面白さを意識して制作しました。
+コンポーネントやMonoBehaviourについての理解を深めつつ、Unityを使用したゲーム制作の楽しさを感じる制作になりました。
 
 # アピールポイント
-
-今作は制作に対して三つの目標を立てました。
-
-1. 大規模で他業種と連携する事を前提とした設計パターンを研究する
-2. 手触り感にこだわれる拡張性や仕様変更に強いアーキテクチャを構築する
-3. 未開拓のゲームジャンルに挑戦し、自分の面白さのこだわりを見つける
-
-この中で1と2が理由で、クリーンアーキテクチャやドメイン駆動設計を参考にしたアーキテクチャを設計することとなりました。
-
-また3が理由で、タイピングかつカードゲームというこれまでにない組み合わせに挑戦し、既存ゲームを研究して新しくも受け入れやすいゲーム体験を目指しました。
-
-結果的に、二年次に行われる三回の”審査会”において、
-前期中間審査会 企画書コンテスト：最優秀賞（学年一位）
-前期末審査会 アルファ版発表：最優秀賞（学年一位）
-後期企業審査会 マスター版発表：優秀賞（学年一位）
-
-という成果を上げる事ができました。
+初めてながらゲーム性やビジュアルまで細かくこだわりました。
+グレネードを投げる時にピンも一緒に飛んでいくようにしたりしています。
