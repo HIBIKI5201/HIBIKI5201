@@ -8,7 +8,7 @@ tools: ["ParticleSystem"]
 productionType: "TEAM"
 isPickup: false
 description: "有志によるチーム制作"
-thumbnail: "images/project/StrayCatAdventure"
+thumbnail: "images/project/StrayCatAdventure.png"
 videoUrl: "https://www.youtube.com/watch?v=QDTe48TMNVg"
 releaseUrl: 
 repoUrl: "https://github.com/HIBIKI5201/CollaborationTeam-MiniGame2024.git"
