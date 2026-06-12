@@ -14,9 +14,9 @@ const projects = defineCollection({
     description: z.string(),
     overview: z.string().optional(),
     thumbnail: z.string().optional(),
-    videoUrl: z.string().url().optional(),
-    releaseUrl: z.string().url().optional(),
-    repoUrl: z.string().url().optional(),
+    videoUrl: z.string().url().nullable().optional(),
+    releaseUrl: z.string().url().nullable().optional(),
+    repoUrl: z.string().url().nullable().optional(),
   }),
 });
 
