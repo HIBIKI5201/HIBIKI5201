@@ -8,9 +8,9 @@ tools: ["DOTween"]
 productionType: "TEAM"
 isPickup: false
 description: "デザイナー主体のゲームジャム"
-thumbnail: "images/project/SHanasuRot.png"
+thumbnail: "images/project/HanasuRot.png"
 videoUrl: "https://www.youtube.com/watch?v=KQZF9KmU3Os"
-releaseUrl: "https://unityroom.com/games/hanasu-rot.png"
+releaseUrl: "https://unityroom.com/games/hanasu-rot."
 repoUrl: "https://github.com/saruwatarishun0031/0625GameJam.git"
 ---
 
