@@ -8,7 +8,7 @@ tools: []
 productionType: "SOLO"
 isPickup: false
 description: "初めてのUnity製ゲーム制作"
-thumbnail: "/images/project/Liset VR Mission.png"
+thumbnail: "/images/project/LisetVRMission.png"
 videoUrl: "https://www.youtube.com/watch?v=aifm8BXnHR4"
 releaseUrl: "https://unityroom.com/games/lisetvrmission"
 repoUrl: "https://github.com/HIBIKI5201/LisetVRmission"

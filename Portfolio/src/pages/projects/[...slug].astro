@@ -9,7 +9,8 @@ import rehypeStringify from "rehype-stringify";
 
 export async function getStaticPaths() {
   const missions = await getCollection("projects");
-  return missions.map(entry => ({
+  const activeMissions = missions.filter(entry => !!entry.data.projectCode && entry.data.projectCode.trim() !== "");
+  return activeMissions.map(entry => ({
     params: { slug: entry.slug }, props: { entry },
   }));
 }
