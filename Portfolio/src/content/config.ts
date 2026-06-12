@@ -3,7 +3,7 @@ import { defineCollection, z } from 'astro:content';
 const projects = defineCollection({
   type: 'content',
   schema: z.object({
-    projectCode: z.string(),
+    projectCode: z.string().nullable().optional(),
     title: z.string(),
     date: z.string(),
     stack: z.array(z.string()),
@@ -14,9 +14,9 @@ const projects = defineCollection({
     description: z.string(),
     overview: z.string().optional(),
     thumbnail: z.string().optional(),
-    videoUrl: z.string().url().nullable().optional(),
-    releaseUrl: z.string().url().nullable().optional(),
-    repoUrl: z.string().url().nullable().optional(),
+    videoUrl: z.union([z.string().url(), z.literal("")]).nullable().optional(),
+    releaseUrl: z.union([z.string().url(), z.literal("")]).nullable().optional(),
+    repoUrl: z.union([z.string().url(), z.literal("")]).nullable().optional(),
   }),
 });
 
