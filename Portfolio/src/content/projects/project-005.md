@@ -10,7 +10,7 @@ isPickup: false
 description: "デザイナー主体のゲームジャム"
 thumbnail: "images/project/SHanasuRot.png"
 videoUrl: "https://www.youtube.com/watch?v=KQZF9KmU3Os"
-releaseUrl: "https://unityroom.com/games/hanasu-rot"
+releaseUrl: "https://unityroom.com/games/hanasu-rot.png"
 repoUrl: "https://github.com/saruwatarishun0031/0625GameJam.git"
 ---
 
