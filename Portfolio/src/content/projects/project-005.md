@@ -1,7 +1,7 @@
 ---
-projectCode: "PROJECT-004"
-title: "Stray Cat Adventure"
-date: "2024-06-09 -> 2024-09-29"
+projectCode: "PROJECT-005"
+title: "はなすロット"
+date: "2024-06-23 -> 2024-06-25"
 stack: ["Unity", "C#"]
 technologies: ["URP"]
 tools: ["DOTween"]
