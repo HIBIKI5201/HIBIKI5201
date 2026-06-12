@@ -3,8 +3,8 @@ projectCode: "PROJECT-002"
 title: "トードロードジャンピング"
 date: "2024-05-21 -> 2024-05-22"
 stack: ["Unity", "C#"]
-technologies: ["BRP"]
-tools: ["TileMap", ParticleSystem]
+technologies: ["BRP", "TileMap", "ParticleSystem"]
+tools: []
 productionType: "TEAM"
 isPickup: false
 description: "初めてのゲームジャムでアクションゲーム制作"

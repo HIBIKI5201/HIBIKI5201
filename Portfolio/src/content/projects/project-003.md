@@ -3,8 +3,8 @@ projectCode: "PROJECT-003"
 title: "おやじVSおかん"
 date: "2024-05-24 -> 2024-05-25"
 stack: ["Unity", "C#"]
-technologies: ["URP"]
-tools: ["TileMap"]
+technologies: ["URP", "TileMap"]
+tools: []
 productionType: "TEAM"
 isPickup: false
 description: "1年次だけの大型ゲームジャム"

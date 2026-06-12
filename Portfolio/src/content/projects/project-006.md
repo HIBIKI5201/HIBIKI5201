@@ -3,8 +3,8 @@ projectCode: "PROJECT-006"
 title: "妖気清浄記"
 date: "2024-06-28 -> 2024-07-28"
 stack: ["Unity", "C#"]
-technologies: ["URP"]
-tools: ["DOTween", "2D Animation", "TimeLine", "CinemaChine", "ParticleSystem"]
+technologies: ["URP", "2D Animation", "TimeLine", "CinemaChine", "ParticleSystem"]
+tools: ["DOTween"]
 productionType: "TEAM"
 isPickup: false
 description: "インディーゲームコンテスト学生選手権 2024応募作品"
