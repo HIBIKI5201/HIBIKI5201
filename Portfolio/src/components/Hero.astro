@@ -1,5 +1,31 @@
 ---
 // 自己紹介セクション。サイト訪問者に最初に目に入る部分で、自己紹介や主要な情報を表示する。
+
+function getExperience(startDate: string) {
+    const start = new Date(startDate);
+    const today = new Date();
+
+    let years = today.getFullYear() - start.getFullYear();
+    let months = today.getMonth() - start.getMonth();
+
+    // 日付がまだ来ていない場合は1か月引く。
+    if (today.getDate() < start.getDate()) {
+        months--;
+    }
+
+    // 月がマイナスになったら年から借りる。
+    if (months < 0) {
+        years--;
+        months += 12;
+    }
+
+    return `${years}Y${months}M`;
+}
+
+const unityExp = getExperience("2024-01-01");
+const csharpExp = getExperience("2024-04-01");
+const unrealExp = getExperience("2025-04-01");
+const cppExp = getExperience("2025-07-01");
 ---
 
 <header class="hero mil-border">
@@ -14,9 +40,10 @@
         ゲームプログラマー専攻
     </div>
     <div class="tech-stack">
-        <span class="tech-item">Unity [1Y5M]</span>
-        <span class="tech-item">C# [1Y2M]</span>
-        <span class="tech-item">UnrealEngine [1M]</span>
+    <span class="tech-item">Unity [{unityExp}]</span>
+    <span class="tech-item">C# [{csharpExp}]</span>
+    <span class="tech-item">UnrealEngine [{unrealExp}]</span>
+    <span class="tech-item">C++ [{cppExp}]</span>
     </div>
 </header>
 

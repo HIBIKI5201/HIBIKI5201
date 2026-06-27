@@ -1,4 +1,5 @@
 ---
+// プロジェクトの詳細ページ
 import { getCollection } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import { unified } from "unified";
@@ -8,7 +9,7 @@ import remarkRehype from "remark-rehype";
 import rehypeStringify from "rehype-stringify";
 
 export async function getStaticPaths() {
-  const missions = await getCollection("projects");
+  const missions = await getCollection("projects"); //content/projectsのデータを受け取る。
   const activeMissions = missions.filter(entry => !!entry.data.projectCode && entry.data.projectCode.trim() !== "");
   return activeMissions.map(entry => ({
     params: { slug: entry.slug }, props: { entry },
@@ -139,12 +140,12 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
                                 <div class="link-grid">
                                     {entry.data.releaseUrl && (
                                         <a href={entry.data.releaseUrl} target="_blank" class="asset-link-btn highlight">
-                                            VIEW PROJECT >>
+                                            VIEW PROJECT
                                         </a>
                                     )}
                                     {entry.data.repoUrl && (
                                         <a href={entry.data.repoUrl} target="_blank" class="asset-link-btn">
-                                            SOURCE CODE >>
+                                            SOURCE CODE
                                         </a>
                                     )}
                                 </div>
