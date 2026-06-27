@@ -9,7 +9,7 @@ import remarkRehype from "remark-rehype";
 import rehypeStringify from "rehype-stringify";
 
 export async function getStaticPaths() {
-  const missions = await getCollection("projects");
+  const missions = await getCollection("projects"); //content/projectsのデータを受け取る。
   const activeMissions = missions.filter(entry => !!entry.data.projectCode && entry.data.projectCode.trim() !== "");
   return activeMissions.map(entry => ({
     params: { slug: entry.slug }, props: { entry },
