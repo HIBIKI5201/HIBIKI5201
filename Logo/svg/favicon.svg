@@ -1,0 +1,143 @@
+<svg
+  id="logo"
+  xmlns="http://www.w3.org/2000/svg"
+  version="2.0"
+  viewBox="0 0 1024 1024"
+  role="img"
+  aria-labelledby="title desc">
+  <title id="title">YT Favicon</title>
+  <desc id="desc">A simplified black and white YT crest optimized for small icon sizes.</desc>
+
+  <g id="background">
+    <rect
+      id="background-black"
+      x="0"
+      y="0"
+      width="1024"
+      height="1024"
+      fill="#000000" />
+  </g>
+
+  <g id="hexagon">
+    <path
+      id="hexagon-outer"
+      d="M512 84 L864 288 L864 736 L512 940 L160 736 L160 288 Z"
+      fill="none"
+      stroke="#FFFFFF"
+      stroke-width="42"
+      stroke-linejoin="round" />
+    <path
+      id="hexagon-inner"
+      d="M512 150 L806 320 L806 704 L512 874 L218 704 L218 320 Z"
+      fill="none"
+      stroke="#FFFFFF"
+      stroke-width="14"
+      stroke-linejoin="round" />
+  </g>
+
+  <g id="music">
+    <path
+      id="staff-lines"
+      d="M254 456 H770 M254 512 H770 M254 568 H770"
+      fill="none"
+      stroke="#FFFFFF"
+      stroke-width="18"
+      stroke-linecap="round" />
+  </g>
+
+  <g id="typography">
+    <path
+      id="letter-y"
+      d="M272 326 L356 326 L466 500 L466 724 L382 724 L382 538 L244 326 Z M404 326 L484 326 L426 420 L382 356 Z"
+      fill="#FFFFFF" />
+    <path
+      id="letter-t"
+      d="M542 326 L790 326 L790 406 L708 406 L708 724 L624 724 L624 406 L542 406 Z"
+      fill="#FFFFFF" />
+  </g>
+
+  <g id="vampire">
+    <path
+      id="bat"
+      d="M512 178 C486 218 446 230 402 208 C432 250 396 272 350 270 C402 320 462 308 512 270 C562 308 622 320 674 270 C628 272 592 250 622 208 C578 230 538 218 512 178 Z"
+      fill="#FFFFFF" />
+    <path
+      id="bat-body-cut"
+      d="M512 222 C494 244 496 262 512 282 C528 262 530 244 512 222 Z"
+      fill="#000000" />
+  </g>
+
+  <g id="sword">
+    <path
+      id="sword-axis"
+      d="M512 302 L530 686 L512 762 L494 686 Z"
+      fill="#FFFFFF" />
+    <path
+      id="sword-guard"
+      d="M430 704 H594 L574 736 H450 Z"
+      fill="#FFFFFF" />
+  </g>
+
+  <g id="pcb">
+    <path
+      id="pcb-traces"
+      d="M260 764 H384 M764 764 H640 M328 764 V824 M696 764 V824"
+      fill="none"
+      stroke="#FFFFFF"
+      stroke-width="18"
+      stroke-linecap="round" />
+    <circle
+      id="pcb-node-left"
+      cx="260"
+      cy="764"
+      r="24"
+      fill="#FFFFFF" />
+    <circle
+      id="pcb-node-right"
+      cx="764"
+      cy="764"
+      r="24"
+      fill="#FFFFFF" />
+  </g>
+
+  <g id="assembly">
+    <path
+      id="assembly-mark-left"
+      d="M274 838 H390 M274 880 H350"
+      fill="none"
+      stroke="#FFFFFF"
+      stroke-width="16"
+      stroke-linecap="round" />
+    <path
+      id="assembly-mark-right"
+      d="M634 838 H750 M674 880 H750"
+      fill="none"
+      stroke="#FFFFFF"
+      stroke-width="16"
+      stroke-linecap="round" />
+  </g>
+
+  <g id="cpp">
+    <path
+      id="cpp-plus"
+      d="M436 246 H486 M461 221 V271 M538 246 H588 M563 221 V271"
+      fill="none"
+      stroke="#FFFFFF"
+      stroke-width="16"
+      stroke-linecap="round" />
+  </g>
+
+  <g id="military">
+    <path
+      id="chevrons"
+      d="M356 776 L412 744 L468 776 L442 804 L412 786 L382 804 Z M668 776 L612 744 L556 776 L582 804 L612 786 L642 804 Z"
+      fill="#FFFFFF" />
+  </g>
+
+  <g id="decoration">
+    <path
+      id="top-star"
+      d="M512 108 L526 144 L564 144 L532 166 L544 204 L512 182 L480 204 L492 166 L460 144 L498 144 Z"
+      fill="#FFFFFF" />
+  </g>
+</svg>

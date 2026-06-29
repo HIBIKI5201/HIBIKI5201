@@ -1,0 +1,176 @@
+<svg
+  id="logo"
+  xmlns="http://www.w3.org/2000/svg"
+  version="2.0"
+  viewBox="0 0 1024 1024"
+  role="img"
+  aria-labelledby="title desc">
+  <title id="title">YT Personal Brand Logo Outline</title>
+  <desc id="desc">An outline-only monochrome version of the YT emblem for light backgrounds and engraving.</desc>
+
+  <g id="background">
+    <rect
+      id="background-transparent"
+      x="0"
+      y="0"
+      width="1024"
+      height="1024"
+      fill="none" />
+  </g>
+
+  <g id="hexagon">
+    <path
+      id="hexagon-outer"
+      d="M512 72 L880 284 L880 740 L512 952 L144 740 L144 284 Z"
+      fill="none"
+      stroke="#000000"
+      stroke-width="28"
+      stroke-linejoin="round" />
+    <path
+      id="hexagon-inner"
+      d="M512 126 L832 310 L832 714 L512 898 L192 714 L192 310 Z"
+      fill="none"
+      stroke="#000000"
+      stroke-width="10"
+      stroke-linejoin="round" />
+  </g>
+
+  <g id="music">
+    <path
+      id="staff-lines"
+      d="M228 440 H796 M228 472 H796 M228 504 H796 M228 536 H796 M228 568 H796"
+      fill="none"
+      stroke="#000000"
+      stroke-width="8"
+      stroke-linecap="round" />
+    <path
+      id="treble-clef"
+      d="M326 588 C284 568 286 512 334 504 C380 496 394 552 348 566 C322 574 298 554 306 526 C314 496 352 482 370 452 C392 414 370 378 342 390 C310 404 320 454 356 486 C410 534 402 620 344 642 C296 660 252 630 264 584 C274 548 318 536 344 560"
+      fill="none"
+      stroke="#000000"
+      stroke-width="12"
+      stroke-linecap="round"
+      stroke-linejoin="round" />
+    <path
+      id="musical-notes"
+      d="M652 420 V552 C652 574 632 592 606 592 C582 592 564 578 564 558 C564 536 586 520 614 520 C624 520 634 522 642 526 V438 Z M720 448 V590 C720 612 700 630 674 630 C650 630 632 616 632 596 C632 574 654 558 682 558 C692 558 702 560 710 564 V466 Z M642 424 L720 452 L720 474 L642 446 Z"
+      fill="#000000" />
+  </g>
+
+  <g id="typography">
+    <path
+      id="letter-y"
+      d="M268 326 L342 326 L456 490 L456 720 L386 720 L386 526 L244 326 Z M398 326 L472 326 L416 410 L380 356 Z"
+      fill="none"
+      stroke="#000000"
+      stroke-width="16"
+      stroke-linejoin="round" />
+    <path
+      id="letter-t"
+      d="M552 326 L780 326 L780 392 L702 392 L702 720 L632 720 L632 392 L552 392 Z M552 326 L602 326 L572 292 Z M730 326 L780 326 L752 292 Z"
+      fill="none"
+      stroke="#000000"
+      stroke-width="16"
+      stroke-linejoin="round" />
+  </g>
+
+  <g id="vampire">
+    <path
+      id="bat"
+      d="M512 178 C488 214 454 222 416 204 C438 236 416 260 374 260 C420 298 466 294 512 260 C558 294 604 298 650 260 C608 260 586 236 608 204 C570 222 536 214 512 178 Z"
+      fill="none"
+      stroke="#000000"
+      stroke-width="14"
+      stroke-linejoin="round" />
+    <path
+      id="wing-left-y"
+      d="M292 308 C330 278 372 282 402 326"
+      fill="none"
+      stroke="#000000"
+      stroke-width="12"
+      stroke-linecap="round" />
+    <path
+      id="wing-right-t"
+      d="M732 308 C694 278 652 282 622 326"
+      fill="none"
+      stroke="#000000"
+      stroke-width="12"
+      stroke-linecap="round" />
+  </g>
+
+  <g id="sword">
+    <path
+      id="sword"
+      d="M512 282 L526 690 L512 748 L498 690 Z M442 704 H582 L566 728 H458 Z M492 728 H532 V796 H492 Z M512 782 L544 812 L512 842 L480 812 Z"
+      fill="none"
+      stroke="#000000"
+      stroke-width="10"
+      stroke-linejoin="round" />
+  </g>
+
+  <g id="pcb">
+    <path
+      id="pcb-traces"
+      d="M250 642 H330 V684 H394 M286 684 V748 H356 M228 730 H296 M774 642 H694 V684 H630 M738 684 V748 H668 M796 730 H728"
+      fill="none"
+      stroke="#000000"
+      stroke-width="10"
+      stroke-linecap="round"
+      stroke-linejoin="round" />
+    <path
+      id="pcb-nodes"
+      d="M265 642 A15 15 0 1 1 235 642 A15 15 0 1 1 265 642 M407 684 A13 13 0 1 1 381 684 A13 13 0 1 1 407 684 M369 748 A13 13 0 1 1 343 748 A13 13 0 1 1 369 748 M789 642 A15 15 0 1 1 759 642 A15 15 0 1 1 789 642 M643 684 A13 13 0 1 1 617 684 A13 13 0 1 1 643 684 M681 748 A13 13 0 1 1 655 748 A13 13 0 1 1 681 748"
+      fill="#000000" />
+  </g>
+
+  <g id="assembly">
+    <path
+      id="assembly-blocks"
+      d="M218 780 H392 V908 H218 Z M632 780 H806 V908 H632 Z M236 798 H356 M236 828 H330 M236 858 H372 M236 888 H318 M668 798 H788 M694 828 H788 M652 858 H788 M706 888 H788"
+      fill="none"
+      stroke="#000000"
+      stroke-width="8"
+      stroke-linecap="round"
+      stroke-linejoin="round" />
+  </g>
+
+  <g id="cpp">
+    <path
+      id="cpp-symbols"
+      d="M270 220 H362 V252 H270 Z M286 252 V286 H346 V252 M662 220 H754 V252 H662 Z M678 252 V286 H738 V252 M390 236 H430 M410 216 V256 M442 236 H482 M462 216 V256 M542 236 H582 M562 216 V256 M594 236 H634 M614 216 V256"
+      fill="none"
+      stroke="#000000"
+      stroke-width="8"
+      stroke-linecap="round"
+      stroke-linejoin="round" />
+  </g>
+
+  <g id="military">
+    <path
+      id="chevrons"
+      d="M332 746 L384 716 L436 746 L414 766 L384 750 L354 766 Z M692 746 L640 716 L588 746 L610 766 L640 750 L670 766 Z"
+      fill="#000000" />
+    <path
+      id="bullets"
+      d="M456 844 H484 C496 844 506 854 506 866 C506 878 496 888 484 888 H456 Z M568 844 H540 C528 844 518 854 518 866 C518 878 528 888 540 888 H568 Z"
+      fill="none"
+      stroke="#000000"
+      stroke-width="8"
+      stroke-linejoin="round" />
+  </g>
+
+  <g id="decoration">
+    <path
+      id="top-star"
+      d="M512 104 L524 136 L558 136 L530 156 L540 188 L512 168 L484 188 L494 156 L466 136 L500 136 Z"
+      fill="#000000" />
+    <path
+      id="bottom-anchor"
+      d="M460 930 H564 M512 884 V940 M482 906 L512 884 L542 906"
+      fill="none"
+      stroke="#000000"
+      stroke-width="8"
+      stroke-linecap="round"
+      stroke-linejoin="round" />
+  </g>
+</svg>
