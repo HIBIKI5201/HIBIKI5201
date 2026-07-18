@@ -43,6 +43,10 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
 		--border-style: 1px solid rgba(var(--accent-color-rgb), 0.3);
 	}
 
+	html {
+		overflow-x: hidden;
+	}
+
 	html, body {
 		margin: 0;
 		padding: 0;
@@ -51,7 +55,6 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
 		background-color: var(--bg-color);
 		color: var(--text-main);
 		font-family: "JetBrains Mono", monospace;
-		overflow-x: hidden;
 		scroll-behavior: smooth;
 	}
 

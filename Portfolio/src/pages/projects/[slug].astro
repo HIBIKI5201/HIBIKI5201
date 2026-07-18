@@ -2,6 +2,7 @@
 // プロジェクトの詳細ページ
 import { getCollection } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
+import PageToc from "../../components/PageToc.astro";
 import { unified } from "unified";
 import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
@@ -51,6 +52,30 @@ const descriptionHtml = entry.data.description
   : "";
 const bodyHtml = bodyMarkdown ? await renderMd(bodyMarkdown) : "";
 
+// 本文中の見出し(# / ##)にidを付与し、目次項目として収集する
+const usedTocIds = new Set(["overview", "links"]);
+const tocSections: { id: string; label: string }[] = [];
+const bodyHtmlWithIds = bodyHtml.replace(/<h([12])>(.*?)<\/h\1>/g, (_match, level, inner) => {
+  const text = inner.replace(/<[^>]+>/g, "").trim();
+  const baseId = text.trim().replace(/\s+/g, "-") || `section-${tocSections.length + 1}`;
+  let id = baseId;
+  let suffix = 2;
+  while (usedTocIds.has(id)) {
+    id = `${baseId}-${suffix}`;
+    suffix++;
+  }
+  usedTocIds.add(id);
+  tocSections.push({ id, label: text });
+  return `<h${level} id="${id}">${inner}</h${level}>`;
+});
+
+const hasLinksSection = !!(entry.data.videoUrl || entry.data.releaseUrl || entry.data.repoUrl);
+const tocItems = [
+  { id: "overview", label: "OVERVIEW" },
+  ...(hasLinksSection ? [{ id: "links", label: "LINKS" }] : []),
+  ...tocSections,
+];
+
 // BASE_URLの末尾に / があるかを確認し、無ければ付けます
 let baseUrl = import.meta.env.BASE_URL;
 if (!baseUrl.endsWith("/")) baseUrl += "/";
@@ -59,7 +84,9 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
 <Layout title={`${entry.data.title} - PROJECT DETAILS`}>
     <div class="mission-detail-container">
         <a href={baseUrl} class="back-btn">&lt;&lt; RETURN TO HOME</a>
-        
+
+        <PageToc items={tocItems} />
+
         <header class="mil-border detail-header">
             <div class="header-top">
                 <span class="id">{entry.data.projectCode}</span>
@@ -108,13 +135,13 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
 
         <section class="mil-border intel-module">
             <div class="intel-grid">
-                <div class="intel-main">
+                <div class="intel-main" id="overview">
                     <div class="asset-label">// PROJECT OVERVIEW</div>
                     <div class="overview-content" set:html={overviewHtml}></div>
                 </div>
 
                 {(entry.data.videoUrl || entry.data.releaseUrl || entry.data.repoUrl) && (
-                    <div class="intel-side">
+                    <div class="intel-side" id="links">
                         {entry.data.videoUrl && (
                             <div class="intel-asset-box">
                                 <div class="asset-label">// DEMO VIDEO</div>
@@ -159,7 +186,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         <section class="mil-border mission-body-full">
             <div class="content-warning">LOADING PROJECT DATA... DONE.</div>
             <div class="markdown-content">
-                {bodyHtml ? <div set:html={bodyHtml} /> : <Content />}
+                {bodyHtml ? <div set:html={bodyHtmlWithIds} /> : <Content />}
             </div>
         </section>
 
@@ -468,10 +495,18 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         margin-bottom: 20px; 
         white-space: pre-wrap;
     }
-    .markdown-content :global(h2) { 
-        color: var(--accent-color); 
-        margin: 40px 0 20px; 
+    .markdown-content :global(h1),
+    .markdown-content :global(h2) {
+        color: var(--accent-color);
+        font-size: 1.4rem;
+        margin: 40px 0 20px;
         border-bottom: 1px solid var(--accent-color);
+        scroll-margin-top: 140px;
+    }
+
+    #overview,
+    #links {
+        scroll-margin-top: 140px;
     }
 
     .footer-actions {

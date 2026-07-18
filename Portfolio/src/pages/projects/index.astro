@@ -3,6 +3,7 @@
 import { getCollection } from "astro:content";
 import { Image } from "astro:assets";
 import Layout from "../../layouts/Layout.astro";
+import PageToc from "../../components/PageToc.astro";
 
 const allMissions = await getCollection("projects", ({ data }) => {
     return !!data.projectCode && data.projectCode.trim() !== "";
@@ -24,12 +25,19 @@ const resolveImagePath = (path: string) => {
 
 const typeLabel = (type: string) =>
     type === 'SOLO' ? 'Solo' : type === 'TEAM' ? 'Team' : 'Other';
+
+const tocItems = [
+    ...(pickupMissions.length > 0 ? [{ id: 'pickup', label: 'PICKUP' }] : []),
+    { id: 'archive', label: 'ARCHIVE' },
+];
 ---
 
 <Layout title="Project Archive - 八幡拓音">
     <section class="mission-archive">
+        <PageToc items={tocItems} />
+
         {pickupMissions.length > 0 && (
-            <div class="pickup-section">
+            <div class="pickup-section" id="pickup">
                 <h2 class="section-title pickup-title">FEATURED PROJECTS <small>// PICKUP</small></h2>
 
                 <div class="pickup-grid">
@@ -84,7 +92,7 @@ const typeLabel = (type: string) =>
             </div>
         )}
 
-        <div class="archive-section">
+        <div class="archive-section" id="archive">
             <h2 class="section-title">PROJECT ARCHIVE <small>// ALL PROJECTS</small></h2>
 
             <div class="filter-bar" role="group" aria-label="プロジェクトのタグフィルター">
@@ -187,6 +195,11 @@ const typeLabel = (type: string) =>
         margin-bottom: 70px;
         padding-bottom: 50px;
         border-bottom: 1px solid rgba(var(--accent-color-rgb), 0.2);
+    }
+
+    #pickup,
+    #archive {
+        scroll-margin-top: 140px;
     }
 
     .section-title {

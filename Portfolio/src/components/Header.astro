@@ -2,19 +2,31 @@
 // ヘッダコンポーネント。サイトのロゴとナビゲーションメニューを含む。
 let baseUrl = import.meta.env.BASE_URL;
 if (!baseUrl.endsWith("/")) baseUrl += "/";
+
+const pathname = Astro.url.pathname;
+const isProjectsPage = pathname.startsWith(`${baseUrl}projects`);
+
+// TOP/PROFILE/RECORDS/CAREERはトップページ内のセクションへのアンカー、PROJECTSは実ページへのリンク。
+const navItems = [
+    { id: "top", label: "TOP", href: `${baseUrl}#top` },
+    { id: "profile", label: "PROFILE", href: `${baseUrl}#profile` },
+    { id: "projects", label: "PROJECTS", href: `${baseUrl}projects/` },
+    { id: "records", label: "RECORDS", href: `${baseUrl}#records` },
+    { id: "career", label: "CAREER", href: `${baseUrl}#career` },
+];
 ---
 
 <header class="main-header">
     <div class="header-container">
         <a href={baseUrl} class="logo">HIKIBI_5201</a>
-        
+
         <nav class="nav-desktop">
             <ul class="nav-links">
-                <li><a href={`${baseUrl}#top`}>TOP</a></li>
-                <li><a href={`${baseUrl}#profile`}>PROFILE</a></li>
-                <li><a href={`${baseUrl}#projects`}>PROJECTS</a></li>
-                <li><a href={`${baseUrl}#records`}>RECORDS</a></li>
-                <li><a href={`${baseUrl}#career`}>CAREER</a></li>
+                {navItems.map((item) => (
+                    <li>
+                        <a href={item.href} data-nav-id={item.id} class:list={[{ active: isProjectsPage && item.id === "projects" }]}>{item.label}</a>
+                    </li>
+                ))}
             </ul>
         </nav>
 
@@ -27,11 +39,11 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
 
     <nav class="nav-mobile" id="mobile-nav">
         <ul class="nav-links">
-            <li><a href={`${baseUrl}#top`}>TOP</a></li>
-            <li><a href={`${baseUrl}#profile`}>PROFILE</a></li>
-            <li><a href={`${baseUrl}#projects`}>PROJECTS</a></li>
-            <li><a href={`${baseUrl}#records`}>RECORDS</a></li>
-            <li><a href={`${baseUrl}#career`}>CAREER</a></li>
+            {navItems.map((item) => (
+                <li>
+                    <a href={item.href} data-nav-id={item.id} class:list={[{ active: isProjectsPage && item.id === "projects" }]}>{item.label}</a>
+                </li>
+            ))}
         </ul>
     </nav>
 
@@ -53,6 +65,27 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
             mobileNav?.classList.remove('active');
         });
     });
+
+    // トップページのセクションをスクロール位置に応じてハイライトする(存在する場合のみ動作)
+    const sectionIds = ['top', 'profile', 'projects', 'records', 'career'];
+    const allNavLinks = document.querySelectorAll<HTMLAnchorElement>('.nav-links a[data-nav-id]');
+    const sections = sectionIds
+        .map((id) => document.getElementById(id))
+        .filter((el): el is HTMLElement => !!el);
+
+    const setActiveSection = (id: string) => {
+        allNavLinks.forEach((link) => link.classList.toggle('active', link.dataset.navId === id));
+    };
+
+    if (sections.length > 0) {
+        const observer = new IntersectionObserver((entries) => {
+            const visible = entries.filter((e) => e.isIntersecting);
+            if (visible.length === 0) return;
+            const topMost = visible.reduce((a, b) => (a.boundingClientRect.top < b.boundingClientRect.top ? a : b));
+            setActiveSection(topMost.target.id);
+        }, { rootMargin: '-40% 0px -50% 0px', threshold: 0 });
+        sections.forEach((s) => observer.observe(s));
+    }
 </script>
 
 <style>
@@ -102,6 +135,11 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
 
     .nav-links a:hover {
         color: var(--accent-color);
+    }
+
+    .nav-links a.active {
+        color: var(--accent-color);
+        text-shadow: 0 0 8px rgba(var(--accent-color-rgb), 0.6);
     }
 
     /* Hamburger Menu */
