@@ -1,59 +1,143 @@
 ---
 // プロジェクトアーカイブページ
 import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
 import Layout from "../../layouts/Layout.astro";
 
-const allMissions = await getCollection("projects");
-const missions = allMissions.filter(entry => !!entry.data.projectCode && entry.data.projectCode.trim() !== "");
-missions.sort((a, b) => b.data.date.localeCompare(a.data.date));
+const allMissions = await getCollection("projects", ({ data }) => {
+    return !!data.projectCode && data.projectCode.trim() !== "";
+});
+allMissions.sort((a, b) => b.data.date.localeCompare(a.data.date));
+
+const pickupMissions = allMissions.filter((entry) => entry.data.isPickup === true);
+const otherMissions = allMissions.filter((entry) => entry.data.isPickup !== true);
 
 let baseUrl = import.meta.env.BASE_URL;
 if (!baseUrl.endsWith("/")) baseUrl += "/";
+
+// 画像パスを解決するヘルパー
+const resolveImagePath = (path: string) => {
+    if (path.startsWith('http')) return path;
+    const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+    return `${baseUrl}${cleanPath}`;
+};
+
+const typeLabel = (type: string) =>
+    type === 'SOLO' ? 'Solo' : type === 'TEAM' ? 'Team' : 'Other';
 ---
 
 <Layout title="Project Archive - 八幡拓音">
     <section class="mission-archive">
-        <h2 class="section-title">PROJECT ARCHIVE <small>// ALL PROJECTS</small></h2>
-        
-        <div class="mission-grid">
-            {missions.map((mission) => (
-                <a href={`${baseUrl}projects/${mission.slug}/`} class="mission-link">
-                    <div class="mil-border mission-item">
-                        {mission.data.thumbnail && (
-                            <div class="mission-thumbnail">
-                                <img src={`${baseUrl}${mission.data.thumbnail.startsWith('/') ? mission.data.thumbnail.slice(1) : mission.data.thumbnail}`} alt={mission.data.title} loading="lazy" />
-                            </div>
-                        )}
-                        <div class="mission-content">
-                            <div class="mission-header">
-                                <span class="id">{mission.data.projectCode}</span>
-                                <span class={`type ${mission.data.productionType.toLowerCase()}`}>
-                                    {mission.data.productionType === 'SOLO' ? 'Solo' : 
-                                     mission.data.productionType === 'TEAM' ? 'Team' : 'Other'}
-                                </span>
-                            </div>
+        {pickupMissions.length > 0 && (
+            <div class="pickup-section">
+                <h2 class="section-title pickup-title">FEATURED PROJECTS <small>// PICKUP</small></h2>
 
-                            <h3>{mission.data.title}</h3>
-                            <div class="meta">
-                                <span class="date">{mission.data.date}</span>
-                                <div class="tags-container">
-                                    <div class="tags-inner">
-                                        {[...Array(2)].map(() => (
-                                            <>
-                                                {mission.data.stack.map(s => <span class="tag stack">{s}</span>)}
-                                                {mission.data.technologies.map(t => <span class="tag tech">{t}</span>)}
-                                                {mission.data.tools && mission.data.tools.map(tool => <span class="tag tool">{tool}</span>)}
-                                            </>
-                                        ))}
+                <div class="pickup-grid">
+                    {pickupMissions.map((mission, index) => (
+                        <a href={`${baseUrl}projects/${mission.slug}/`} class="mission-link pickup-link">
+                            <div class="mil-border mission-item pickup-item">
+                                <span class="pickup-badge">★ PICKUP</span>
+                                {mission.data.thumbnail && (
+                                    <div class="mission-thumbnail">
+                                        <Image
+                                            src={resolveImagePath(mission.data.thumbnail)}
+                                            alt={mission.data.title}
+                                            width={600}
+                                            height={400}
+                                            format="webp"
+                                            quality={80}
+                                            loading={index === 0 ? "eager" : "lazy"}
+                                            fetchpriority={index === 0 ? "high" : "auto"}
+                                        />
                                     </div>
+                                )}
+                                <div class="mission-content">
+                                    <div class="mission-header">
+                                        <span class="id">{mission.data.projectCode}</span>
+                                        <span class={`type ${mission.data.productionType.toLowerCase()}`}>
+                                            {typeLabel(mission.data.productionType)}
+                                        </span>
+                                    </div>
+
+                                    <h3>{mission.data.title}</h3>
+                                    <div class="meta">
+                                        <span class="date">{mission.data.date}</span>
+                                        <div class="tags-container">
+                                            <div class="tags-inner">
+                                                {[...Array(2)].map(() => (
+                                                    <>
+                                                        {mission.data.stack.map(s => <span class="tag stack">{s}</span>)}
+                                                        {mission.data.technologies.map(t => <span class="tag tech">{t}</span>)}
+                                                        {mission.data.tools && mission.data.tools.map(tool => <span class="tag tool">{tool}</span>)}
+                                                    </>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="desc">{mission.data.description}</p>
+                                    <div class="entry-btn">VIEW DETAILS >></div>
                                 </div>
                             </div>
-                            <p class="desc">{mission.data.description}</p>
-                            <div class="entry-btn">VIEW DETAILS >></div>
+                        </a>
+                    ))}
+                </div>
+            </div>
+        )}
+
+        <div class="archive-section">
+            <h2 class="section-title">PROJECT ARCHIVE <small>// ALL PROJECTS</small></h2>
+
+            <div class="filter-bar" role="group" aria-label="プロジェクトのタグフィルター">
+                <button type="button" class="filter-btn active" data-filter="all">ALL</button>
+                <button type="button" class="filter-btn" data-filter="solo">SOLO</button>
+                <button type="button" class="filter-btn" data-filter="team">TEAM</button>
+            </div>
+
+            <div class="mission-grid">
+                {otherMissions.map((mission) => (
+                    <a
+                        href={`${baseUrl}projects/${mission.slug}/`}
+                        class="mission-link grid-link"
+                        data-type={mission.data.productionType.toLowerCase()}
+                    >
+                        <div class="mil-border mission-item grid-item">
+                            {mission.data.thumbnail && (
+                                <div class="mission-thumbnail">
+                                    <img src={resolveImagePath(mission.data.thumbnail)} alt={mission.data.title} loading="lazy" />
+                                </div>
+                            )}
+                            <div class="mission-content">
+                                <div class="mission-header">
+                                    <span class="id">{mission.data.projectCode}</span>
+                                    <span class={`type ${mission.data.productionType.toLowerCase()}`}>
+                                        {typeLabel(mission.data.productionType)}
+                                    </span>
+                                </div>
+
+                                <h3>{mission.data.title}</h3>
+                                <div class="meta">
+                                    <span class="date">{mission.data.date}</span>
+                                    <div class="tags-container">
+                                        <div class="tags-inner">
+                                            {[...Array(2)].map(() => (
+                                                <>
+                                                    {mission.data.stack.map(s => <span class="tag stack">{s}</span>)}
+                                                    {mission.data.technologies.map(t => <span class="tag tech">{t}</span>)}
+                                                    {mission.data.tools && mission.data.tools.map(tool => <span class="tag tool">{tool}</span>)}
+                                                </>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="desc">{mission.data.description}</p>
+                                <div class="entry-btn">VIEW DETAILS >></div>
+                            </div>
                         </div>
-                    </div>
-                </a>
-            ))}
+                    </a>
+                ))}
+            </div>
+
+            <p class="no-results" data-no-results hidden>該当するプロジェクトが見つかりませんでした。</p>
         </div>
 
         <div class="back-home">
@@ -63,6 +147,30 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         </div>
     </section>
 </Layout>
+
+<script>
+    const buttons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+    const cards = document.querySelectorAll<HTMLAnchorElement>('.grid-link');
+    const noResults = document.querySelector<HTMLElement>('[data-no-results]');
+
+    const applyFilter = (filter: string) => {
+        let visibleCount = 0;
+        cards.forEach((card) => {
+            const matches = filter === 'all' || card.dataset.type === filter;
+            card.classList.toggle('is-hidden', !matches);
+            if (matches) visibleCount++;
+        });
+        if (noResults) noResults.hidden = visibleCount !== 0;
+    };
+
+    buttons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+            buttons.forEach((b) => b.classList.remove('active'));
+            btn.classList.add('active');
+            applyFilter(btn.dataset.filter ?? 'all');
+        });
+    });
+</script>
 
 <style>
     :where(.mission-archive) {
@@ -75,6 +183,12 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         margin: 40px 0;
     }
 
+    .pickup-section {
+        margin-bottom: 70px;
+        padding-bottom: 50px;
+        border-bottom: 1px solid rgba(var(--accent-color-rgb), 0.2);
+    }
+
     .section-title {
         font-size: 2.2rem;
         margin-bottom: 50px;
@@ -84,6 +198,10 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         letter-spacing: 0.1em;
     }
 
+    .pickup-title {
+        text-shadow: 0 0 15px rgba(var(--accent-color-rgb), 0.4);
+    }
+
     .section-title small {
         font-size: 1rem;
         color: var(--text-sub);
@@ -91,10 +209,89 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         margin-left: 10px;
     }
 
-    .mission-grid {
+    /* --- フィルターバー --- */
+    .filter-bar {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+    }
+
+    .filter-btn {
+        font-family: "Oxanium", sans-serif;
+        font-size: 0.85rem;
+        font-weight: bold;
+        letter-spacing: 0.08em;
+        padding: 8px 22px;
+        background: transparent;
+        border: 1px solid rgba(var(--accent-color-rgb), 0.4);
+        color: var(--text-sub);
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .filter-btn:hover {
+        border-color: var(--accent-color);
+        color: var(--accent-glow);
+    }
+
+    .filter-btn.active {
+        background: var(--accent-color);
+        border-color: var(--accent-color);
+        color: #000;
+        box-shadow: 0 0 12px rgba(var(--accent-color-rgb), 0.5);
+    }
+
+    .no-results {
+        display: block;
+        margin-top: 30px;
+        text-align: center;
+        color: var(--text-sub);
+        font-size: 0.9rem;
+    }
+
+    .no-results[hidden] {
+        display: none;
+    }
+
+    /* --- ピックアップ（特別枠） --- */
+    .pickup-grid {
         display: grid;
         grid-template-columns: 1fr;
+        gap: 25px;
+    }
+
+    .pickup-item {
+        border-color: var(--accent-glow);
+        box-shadow: 0 0 25px rgba(var(--accent-color-rgb), 0.15);
+        position: relative;
+    }
+
+    .pickup-badge {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 2;
+        background: var(--accent-color);
+        color: #000;
+        font-size: 0.75rem;
+        font-weight: bold;
+        letter-spacing: 0.08em;
+        padding: 4px 14px;
+        clip-path: polygon(0 0, 100% 0, 88% 100%, 0% 100%);
+    }
+
+    /* --- 通常一覧: 二列グリッド --- */
+    .mission-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
         gap: 20px;
+    }
+
+    @media (max-width: 900px) {
+        .mission-grid {
+            grid-template-columns: 1fr;
+        }
     }
 
     .mission-link {
@@ -102,6 +299,10 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         color: inherit;
         display: block;
         min-width: 0;
+    }
+
+    .grid-link.is-hidden {
+        display: none;
     }
 
     .mission-item {
@@ -119,6 +320,18 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         .mission-item {
             flex-direction: column;
         }
+    }
+
+    /* 二列グリッドのカードは縦積みレイアウトにして幅に収める */
+    .grid-item {
+        flex-direction: column;
+    }
+
+    .grid-item .mission-thumbnail {
+        width: 100%;
+        height: 180px;
+        border-right: none;
+        border-bottom: 1px solid rgba(var(--accent-color-rgb), 0.2);
     }
 
     .mission-thumbnail {
@@ -166,6 +379,11 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         background: rgba(var(--accent-color-rgb), 0.1);
         transform: translateX(10px);
         box-shadow: -5px 0 0 var(--accent-color);
+    }
+
+    .grid-link:hover .grid-item {
+        transform: translateY(-6px);
+        box-shadow: 0 8px 0 var(--accent-color);
     }
 
     .mission-header {
@@ -255,7 +473,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
     }
 
     .tag.stack::before { content: ":: "; opacity: 0.6; }
-    
+
     .tag.tech {
         color: var(--accent-glow);
         background: rgba(var(--accent-color-rgb), 0.1);
