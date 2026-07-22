@@ -1,5 +1,31 @@
 ---
 // プロフィールセクション。個人の興味やスキル、好きなゲームなどを紹介する。
+
+function getExperience(startDate: string) {
+    const start = new Date(startDate);
+    const today = new Date();
+
+    let years = today.getFullYear() - start.getFullYear();
+    let months = today.getMonth() - start.getMonth();
+
+    // 日付がまだ来ていない場合は1か月引く。
+    if (today.getDate() < start.getDate()) {
+        months--;
+    }
+
+    // 月がマイナスになったら年から借りる。
+    if (months < 0) {
+        years--;
+        months += 12;
+    }
+
+    return `${years}Y${months}M`;
+}
+
+const unityExp = getExperience("2024-01-01");
+const csharpExp = getExperience("2024-04-01");
+const unrealExp = getExperience("2025-04-01");
+const cppExp = getExperience("2025-07-01");
 ---
 
 <section class="profile">
@@ -16,8 +42,10 @@
     </div>
     <div class="mil-border card mt">
         <h3>Skills</h3>
-        <div class="skill-bar"><div class="fill" style="width: 85%">Unity / C#</div></div>
-        <div class="skill-bar"><div class="fill orange" style="width: 25%">Unreal Engine / C++</div></div>
+        <div class="skill-bar"><div class="fill" style="width: 85%">Unity <span class="exp">[{unityExp}]</span></div></div>
+        <div class="skill-bar"><div class="fill" style="width: 85%">C# <span class="exp">[{csharpExp}]</span></div></div>
+        <div class="skill-bar"><div class="fill orange" style="width: 25%">Unreal Engine <span class="exp">[{unrealExp}]</span></div></div>
+        <div class="skill-bar"><div class="fill orange" style="width: 25%">C++ <span class="exp">[{cppExp}]</span></div></div>
     </div>
     <div class="mil-border card mt">
         <h3>Favorite Games</h3>
@@ -83,5 +111,11 @@
     .skill-bar .fill.orange {
         background: var(--warning-color);
         box-shadow: 0 0 10px rgba(var(--accent-color-rgb), 0.2);
+    }
+
+    .skill-bar .exp {
+        margin-left: 6px;
+        opacity: 0.75;
+        font-weight: normal;
     }
 </style>
