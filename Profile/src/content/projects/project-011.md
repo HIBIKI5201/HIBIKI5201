@@ -1,13 +1,13 @@
 ---
 projectCode: ""
 title: "ちくわ きゅうり CHARGE SHOT"
-date: "2026-00-00 -> 2026-00-00"
+date: "2025-02-25 -> 2025-02-27"
 stack: ["Unity", "C#"]
 technologies: ["URP", "Shader Graph"]
 tools: [""]
 productionType: "TEAM"
 isPickup: false
-description: ""
+description: "テーマがSEの異色のゲームジャム作品"
 thumbnail: "images/project/Chikuwa_Kyuri_CHARGE_SHOT.png"
 videoUrl: "https://www.youtube.com/watch?v=9GPjmcp741w"
 releaseUrl: ""

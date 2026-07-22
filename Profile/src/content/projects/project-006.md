@@ -3,7 +3,7 @@ projectCode: "PROJECT-006"
 title: "妖気清浄記"
 date: "2024-06-28 -> 2024-07-28"
 stack: ["Unity", "C#"]
-technologies: ["URP", "2D Animation", "TimeLine", "CinemaChine", "ParticleSystem"]
+technologies: ["BRP", "2D Animation", "TimeLine", "CinemaChine", "ParticleSystem"]
 tools: ["DOTween"]
 productionType: "TEAM"
 isPickup: false

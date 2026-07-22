@@ -4,7 +4,7 @@ title: "ダンジョン クラフター"
 date: "2024-10-09 -> 2025-02-12"
 stack: ["Unity", "C#"]
 technologies: ["URP", "2D Sprite Animation", "AnimationRigging", "NavMesh",  "CinemaChine", "ProBuilder",  "Shader Graph", "UI ToolKit"]
-tools: ["DOTween"]
+tools: []
 productionType: "TEAM"
 isPickup: false
 description: "一年次最大のチーム制作"
