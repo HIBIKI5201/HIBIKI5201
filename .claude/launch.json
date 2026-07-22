@@ -2,9 +2,9 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "portfolio-dev",
+      "name": "profile-dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["--prefix", "Portfolio", "run", "dev"],
+      "runtimeArgs": ["--prefix", "Profile", "run", "dev"],
       "port": 4321
     }
   ]

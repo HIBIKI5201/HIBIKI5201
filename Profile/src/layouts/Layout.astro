@@ -1,6 +1,6 @@
 ---
 import Header from "../components/Header.astro";
-const { title = "八幡拓音 - Portfolio" } = Astro.props;
+const { title = "八幡拓音 - Profile" } = Astro.props;
 let baseUrl = import.meta.env.BASE_URL; // "/HIBIKI5201/" になります
 if (!baseUrl.endsWith("/")) baseUrl += "/";
 ---
@@ -39,7 +39,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
 		--warning-color: #555555; /* 警告やサブ要素はグレーで抑える */
 		--text-main: #e0e0e0;
 		--text-sub: #888888;
-		--military-purple: #1a1a1a; /* ここもモノトーンに */
+		--tag-bg: #1a1a1a; /* ここもモノトーンに */
 		--border-style: 1px solid rgba(var(--accent-color-rgb), 0.3);
 	}
 
@@ -149,7 +149,7 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
 	}
 
 	::-webkit-scrollbar-thumb {
-		background: var(--military-purple);
+		background: var(--tag-bg);
 		border: 1px solid var(--accent-color);
 	}
 </style>
