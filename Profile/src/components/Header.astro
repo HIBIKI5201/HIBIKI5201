@@ -1,8 +1,14 @@
 ---
 // ヘッダコンポーネント。サイトのロゴとナビゲーションメニューを含む。
+// すべてのページで src/layouts/Layout.astro から読み込まれる共通パーツ。
 let baseUrl = import.meta.env.BASE_URL;
 if (!baseUrl.endsWith("/")) baseUrl += "/";
 
+// Astro.url は「今まさに生成しようとしているページ」のURL情報を持つオブジェクト。
+// 例えば /projects/project-013/ ページを生成しているときは
+// Astro.url.pathname が "/HIBIKI5201/projects/project-013/" になる。
+// これを使うことで「今どのページを見ているか」をサーバー側(ビルド時)で判定し、
+// ヘッダーのリンクをハイライトさせている(クライアントJSでのURL判定は不要)。
 const pathname = Astro.url.pathname;
 const isProjectsPage = pathname.startsWith(`${baseUrl}projects`);
 
@@ -20,8 +26,19 @@ const navItems = [
 
         <nav class="nav-desktop">
             <ul class="nav-links">
+                {/*
+                    navItems.map(...) はJavaScriptの配列メソッドをそのままJSXっぽい記法の中で使っている。
+                    Astroのテンプレートは「{ }の中はJS/TSの式として評価され、返した値がHTMLとして展開される」
+                    というReact/JSXに似たルールになっている。ここでは navItems配列の要素数だけ<li>を生成している。
+                */}
                 {navItems.map((item) => (
                     <li>
+                        {/*
+                            class:list={[{ 条件: true/false }]} はAstro独自のヘルパー構文。
+                            オブジェクトのキーがクラス名、値がtrueのときだけそのクラスが付与される。
+                            通常のJSXなら `class={cond ? "active" : ""}` と書くところを、
+                            複数条件を配列やオブジェクトでまとめて書けるようにしたもの。
+                        */}
                         <a href={item.href} data-nav-id={item.id} class:list={[{ active: isProjectsPage ? item.id === "projects" : item.id === "top" }]}>{item.label}</a>
                     </li>
                 ))}
@@ -35,6 +52,7 @@ const navItems = [
         </button>
     </div>
 
+    <!-- スマホ表示用のメニュー。中身はデスクトップ版と同じnavItemsを再利用している。 -->
     <nav class="nav-mobile" id="mobile-nav">
         <ul class="nav-links">
             {navItems.map((item) => (
@@ -47,6 +65,14 @@ const navItems = [
 
 </header>
 
+<!--
+    <script>タグの中身は、上のフロントマター(--- --- で囲まれた部分)とは違い、
+    ビルド時ではなく「ブラウザ側」で実行される、普通のクライアントサイドJavaScript。
+    Astroはこのコードをそのままバンドルしてブラウザに送る。
+    ハンバーガーメニューの開閉のような「クリックされたら見た目を変える」という
+    インタラクティブな処理は、こうして<script>に書く必要がある
+    (フロントマターの中に書いても、ページ表示後のクリックには反応しない)。
+-->
 <script>
     const hamburger = document.getElementById('hamburger-menu');
     const mobileNav = document.getElementById('mobile-nav');
@@ -65,6 +91,12 @@ const navItems = [
     });
 </script>
 
+<!--
+    <style>タグ(is:globalなし)はAstroの標準機能で「スコープされたCSS」になる。
+    ビルド時にAstroがこのファイル専用のクラス名(ハッシュ)を自動生成し、
+    ここに書いた .logo などのセレクタは実質的に「このHeader.astro内の.logoにだけ」効く。
+    そのため、他のコンポーネントで同じ名前のクラス(.card など)を使っても衝突しない。
+-->
 <style>
     .main-header {
         position: fixed;

@@ -1,11 +1,21 @@
 ---
 // プロジェクトのピックアップセクション。特に注目してほしいプロジェクトをカード形式で表示する。
+// トップページ専用で、src/content/projects/ の中から isPickup: true が付いたものだけを表示する。
+// 全件一覧は src/pages/projects/index.astro が別に担当している(似ているが役割が違う)。
 import { getCollection } from "astro:content";
+// astro:assets の <Image /> は、ビルド時に画像を自動でリサイズ・最適化(webp変換など)してくれる
+// Astro標準のコンポーネント。普通の<img>タグの代わりに使うことで、
+// 「表示サイズに対して無駄に大きい画像を読み込んでしまう」問題を防げる。
 import { Image } from "astro:assets";
 
+// getCollection("projects", ({ data }) => ...) は、src/content/config.ts で定義した
+// "projects" コレクションの全Markdownファイルを読み込み、第2引数のコールバック関数が
+// true を返したものだけに絞り込む(配列のfilterと同じ考え方)。
+// data には各Markdownのfrontmatterがオブジェクトとして入っている。
 const missions = await getCollection("projects", ({ data }) => {
     return data.isPickup === true && !!data.projectCode && data.projectCode.trim() !== "";
 });
+// 配列のsortメソッドで日付の新しい順に並べ替え。localeCompareで文字列としての日付を比較している。
 missions.sort((a, b) => b.data.date.localeCompare(a.data.date));
 
 let baseUrl = import.meta.env.BASE_URL;
@@ -22,15 +32,19 @@ const resolveImagePath = (path: string) => {
 
 <section class="mission-archive">
     <h2 class="section-title">FEATURED PROJECTS <small>// PICKUP</small></h2>
-    
+
     <div class="mission-grid">
+        {/* missions.map(...) で取得済みの配列をループし、1件ごとにカードのHTMLを生成する。
+            index (何番目か)を使って、一番最初の1枚だけ画像を優先的に読み込む(下記loading参照)。 */}
         {missions.map((mission, index) => (
             <a href={`${baseUrl}projects/${mission.slug}/`} class="mission-link">
                 <div class="mil-border mission-item">
                     {mission.data.thumbnail && (
                         <div class="mission-thumbnail">
-                            <Image 
-                                src={resolveImagePath(mission.data.thumbnail)} 
+                            {/* 一番目(index === 0)の画面に最初に見える画像だけ即座に読み込み(loading="eager")、
+                                残りは画面に近づくまで読み込みを遅らせる(lazy)ことでページの初期表示を速くする。 */}
+                            <Image
+                                src={resolveImagePath(mission.data.thumbnail)}
                                 alt={mission.data.title}
                                 width={600}
                                 height={400}
@@ -45,7 +59,7 @@ const resolveImagePath = (path: string) => {
                         <div class="mission-header">
                             <span class="id">{mission.data.projectCode}</span>
                             <span class={`type ${mission.data.productionType.toLowerCase()}`}>
-                                {mission.data.productionType === 'SOLO' ? 'Solo' : 
+                                {mission.data.productionType === 'SOLO' ? 'Solo' :
                                  mission.data.productionType === 'TEAM' ? 'Team' : 'Other'}
                             </span>
                         </div>
@@ -54,6 +68,11 @@ const resolveImagePath = (path: string) => {
                             <span class="date">{mission.data.date}</span>
                             <div class="tags-container">
                                 <div class="tags-inner">
+                                    {/* [...Array(2)].map(...) は「中身が空の配列を2要素分作って2回繰り返す」ための
+                                        よくあるテクニック。タグを2回連続で並べることで、CSSの横流れアニメーション
+                                        (marquee)がループしても切れ目が見えないようにしている。
+                                        <>...</> は複数の要素をまとめて返すための「フラグメント」という書き方
+                                        (余計な<div>などのタグを増やさずに済む)。 */}
                                     {[...Array(2)].map(() => (
                                         <>
                                             {mission.data.stack.map(s => <span class="tag stack">{s}</span>)}
@@ -267,7 +286,7 @@ const resolveImagePath = (path: string) => {
     }
 
     .tag.stack::before { content: ":: "; opacity: 0.6; }
-    
+
     .tag.tech {
         color: var(--accent-glow);
         background: rgba(var(--accent-color-rgb), 0.1);

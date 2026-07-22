@@ -1,12 +1,23 @@
 ---
 // ページ内のセクションへジャンプするSticky目次。
 // スクロール位置に応じて現在のセクションをハイライトする。
+// トップページ・プロジェクト一覧・プロジェクト詳細ページから、それぞれ違う項目リストを渡して再利用している
+// (「1つの部品を複数ページで使い回す」というAstroコンポーネントの典型的な使い方)。
+
+// interface Props { ... } はTypeScriptの型定義。
+// このコンポーネントを <PageToc items={...} /> のように呼び出す側が、
+// items という名前で「idとlabelを持つオブジェクトの配列」を渡すことを期待している、という宣言。
+// 型と違うものを渡すとエディタ上やビルド時にエラーとして気づける。
 interface Props {
     items: { id: string; label: string }[];
 }
+// 呼び出し側が渡したprops(属性)を受け取る。分割代入で items だけ取り出している。
 const { items } = Astro.props;
 ---
 
+{/* items.length > 1 && (...) は「itemsが2個以上あるときだけ描画する」という条件付きレンダリング。
+    JSと同じ && 演算子の性質(左がfalsyなら右を評価しない)を利用したAstro/JSXの定番パターン。
+    項目が1つしかない目次は意味がないため非表示にしている。 */}
 {items.length > 1 && (
     <nav class="page-toc" aria-label="ページ内目次">
         <div class="page-toc-inner">
@@ -17,8 +28,19 @@ const { items } = Astro.props;
     </nav>
 )}
 
+<!--
+    ここから下はブラウザ側で動くクライアントサイドJavaScript(フロントマターとは別物)。
+    「スクロールに応じて今見ているセクションのボタンを光らせる」という動きは
+    ビルド時には計算できず、実際にユーザーがスクロールして初めて分かることなので、
+    <script>としてブラウザに送り、ブラウザ上で実行する必要がある。
+-->
 <script>
+    // このPageToc.astroが複数のページで使われるたびに、この<script>のコードも
+    // そのページ用に独立して実行される(他ページのPageTocとは無関係)。
     const links = document.querySelectorAll<HTMLAnchorElement>('.toc-link');
+
+    // 各リンクの data-toc-id (上のマークアップで data-toc-id={item.id} と書いた部分)を手がかりに、
+    // 対応する実際のセクション要素(例: <div id="pickup">)をページの中から探し出す。
     const sections = Array.from(links)
         .map((link) => document.getElementById(link.dataset.tocId ?? ''))
         .filter((el): el is HTMLElement => !!el);
@@ -28,19 +50,31 @@ const { items } = Astro.props;
     };
 
     if (sections.length > 0) {
+        // IntersectionObserver = 「特定の要素が画面(ビューポート)に入った/出た」を
+        // スクロールイベントを自前で監視するより効率的に検知できるブラウザ標準API。
+        // rootMargin: '-30% 0px -60% 0px' は「画面の上30%〜下60%を除いた、
+        // 画面の真ん中あたりの帯」を判定基準にすることで、画面中央付近に来たセクションを
+        // 「今見ている」とみなすように調整している。
         const observer = new IntersectionObserver((entries) => {
             const visible = entries.filter((e) => e.isIntersecting);
             if (visible.length === 0) return;
+            // 複数のセクションが同時に条件を満たす場合、一番上にある(=先に読んでいる)ものを採用する。
             const topMost = visible.reduce((a, b) => (a.boundingClientRect.top < b.boundingClientRect.top ? a : b));
             setActive(topMost.target.id);
         }, { rootMargin: '-30% 0px -60% 0px', threshold: 0 });
+
+        // 監視対象として全セクションを登録。以降、スクロールのたびに上のコールバックが呼ばれる。
         sections.forEach((s) => observer.observe(s));
+        // ページ読み込み直後は一番上のセクションをあらかじめアクティブにしておく。
         setActive(sections[0].id);
     }
 </script>
 
 <style>
     .page-toc {
+        /* position: sticky は「親要素の中でスクロールされる間は普通に流れるが、
+           指定した位置(ここではtop: 67px、固定ヘッダーの高さ分)に到達すると、
+           そこで画面に張り付いたように止まる」CSSの機能。JS不要でスクロール追従を実現している。 */
         position: sticky;
         top: 67px;
         z-index: 500;

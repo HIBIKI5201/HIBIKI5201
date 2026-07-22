@@ -1,5 +1,7 @@
 ---
-// プロジェクトアーカイブページ
+// プロジェクトアーカイブページ。
+// src/pages/projects/index.astro というファイルパスが、そのまま "/projects/" というURLになる
+// (index.astroという名前は「このフォルダのトップページ」を意味する特別な名前)。
 import { getCollection } from "astro:content";
 import { Image } from "astro:assets";
 import Layout from "../../layouts/Layout.astro";
@@ -32,6 +34,9 @@ const tocItems = [
 ];
 ---
 
+<!-- Layoutコンポーネントにtitle propsを渡すと、Layout.astro側の
+     `const { title = "..." } = Astro.props` がこの値を受け取り、<title>タグに反映される。
+     何も渡さなければLayout.astro側のデフォルト値("八幡拓音 - Profile")が使われる。 -->
 <Layout title="Project Archive - 八幡拓音">
     <section class="mission-archive">
         <PageToc items={tocItems} />
@@ -157,6 +162,10 @@ const tocItems = [
 </Layout>
 
 <script>
+    // ALL/SOLO/TEAMのフィルターボタン。フレームワーク(React等)を使わない素のDOM操作で実装している。
+    // 各カードには上のマークアップで data-type={mission.data.productionType.toLowerCase()} が
+    // 埋め込まれているので、ボタンがクリックされたらその値と一致しないカードに
+    // is-hidden クラスを付けて隠す、という単純な仕組み。
     const buttons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
     const cards = document.querySelectorAll<HTMLAnchorElement>('.grid-link');
     const noResults = document.querySelector<HTMLElement>('[data-no-results]');
@@ -181,6 +190,13 @@ const tocItems = [
 </script>
 
 <style>
+    /* :where(.mission-archive) { --accent-color: ...; } は、
+       Layout.astroの:rootで定義したグローバルな--accent-colorを、
+       このページの.mission-archive要素の内側だけ別の紫に上書きするテクニック。
+       CSSカスタムプロパティは指定した要素の内側(子孫)に自動で伝わっていく性質があるため、
+       ページごとに少し違う色味を出したいときに便利。
+       :where(...)を使っているのは、詳細度(CSS優先順位)を0にして他のスタイルと
+       衝突しにくくするため。 */
     :where(.mission-archive) {
         --accent-color: #a070ff;
         --accent-color-rgb: 160, 112, 255;

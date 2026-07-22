@@ -1,14 +1,27 @@
 ---
-// プロジェクトの詳細ページ
+// プロジェクトの詳細ページ。
+//
+// ファイル名が [slug].astro のように角括弧になっているのは「動的ルート」というAstroの仕組み。
+// 1つのファイルから、プロジェクトの数だけページを自動生成する(project-001, project-002, ... それぞれに
+// /projects/project-001/ のようなURLが割り当たる)。
+// この[slug]という名前が、下のgetStaticPathsが返す params.slug の値に対応している。
 import { getCollection } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import PageToc from "../../components/PageToc.astro";
+// unified/remark/rehype は「Markdown文字列をHTML文字列に変換する」ための定番ライブラリ群。
+// remark系がMarkdownの解析、rehype系がHTMLへの変換を担当し、.use()でパイプラインのように
+// 変換ステップをつなげていく(下のrenderMd関数を参照)。
 import { unified } from "unified";
 import remarkParse from "remark-parse";
-import remarkGfm from "remark-gfm";
+import remarkGfm from "remark-gfm"; // GitHub Flavored Markdown(表組みなど)に対応させる拡張
 import remarkRehype from "remark-rehype";
 import rehypeStringify from "rehype-stringify";
 
+// getStaticPaths は動的ルート([slug].astro)専用の特別な関数。
+// 「このページが実際に生成すべきURLの一覧」をビルド時に教えるためのもの。
+// ここではprojectsコレクションの全件をもとに、1件につき1ページ分のパラメータを作っている。
+// 戻り値の params.slug がURLの一部になり、props.entry がそのページ内で使えるデータになる
+// (このentryは下の `const { entry } = Astro.props;` で受け取っている)。
 export async function getStaticPaths() {
   const missions = await getCollection("projects"); //content/projectsのデータを受け取る。
   const activeMissions = missions.filter(entry => !!entry.data.projectCode && entry.data.projectCode.trim() !== "");
@@ -18,21 +31,40 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
+// entry.render() は、Content Collectionsが用意している「このMarkdownファイルの本文をHTMLとして
+// レンダリングするコンポーネント」を取り出すメソッド。取り出した<Content />は下のテンプレートで
+// `<Content />` とタグのように書くだけで、本文がそのまま描画される(フォールバック用途、詳細は下記)。
 const { Content } = await entry.render();
 const slug = Array.isArray(entry.slug) ? entry.slug.join("/") : entry.slug;
+// import.meta.glob はAstroの基盤であるVite(ビルドツール)が提供する機能。
+// 指定したパターンに一致する複数のファイルを、一度にまとめて読み込める。
+// { as: "raw" } は「Markdownとして解釈せず、ファイルの中身をただの文字列として読む」という意味。
+// entry.render()(上のContentコンポーネント)だけだと本文全体しか扱えず、
+// 特定の見出し(## overview)だけを抜き出すような細かい加工ができないため、
+// 生のMarkdown文字列を自前で正規表現処理するためにここで再度読み込んでいる。
 const projectFiles = import.meta.glob("../../content/projects/*.md", { as: "raw", eager: true });
 const projectPath = `../../content/projects/${slug}.md`;
 const markdownSource = projectFiles[projectPath];
 if (!markdownSource) {
   throw new Error(`Project markdown not found: ${projectPath}`);
 }
+// frontmatter部分(--- ... ---)を正規表現で取り除き、Markdown本文だけを取り出す。
 const markdownBody = markdownSource.replace(/^---[\s\S]*?---\s*/m, "");
+// "## overview" という見出しの直後から、次の見出しが出てくる直前までを正規表現で抜き出す。
+// これを「概要(OVERVIEW)」として画面上部の専用エリアに表示し、
+// それ以外の本文(説明・アピールポイントなど)は下のmarkdown-contentエリアにまとめて表示する、
+// という2段構成にするための下準備。
 const overviewMatch = markdownBody.match(/^##\s*overview\s*[\r\n]+([\s\S]*?)(?=^#{1,6}\s|\z)/im);
 const overviewMarkdown = overviewMatch ? overviewMatch[1].trim() : "";
 const bodyMarkdown = overviewMarkdown
   ? markdownBody.replace(/^##\s*overview\s*[\r\n]+[\s\S]*?(?=^#{1,6}\s|\z)/im, "").trim()
   : markdownBody;
 
+// MarkdownテキストをHTML文字列に変換する関数。
+// unified().use(A).use(B)... という書き方は「処理をパイプのようにつなげる」ライブラリ共通の作法で、
+// ここでは remarkParse(文字列→Markdown構文木) → remarkGfm(表組み等に対応)
+// → remarkRehype(Markdown構文木→HTML構文木) → rehypeStringify(HTML構文木→文字列)
+// の順に変換している。戻り値はただの文字列なので、下で set:html={overviewHtml} のように使う。
 async function renderMd(source: string) {
   return String(await unified()
     .use(remarkParse)
@@ -52,7 +84,12 @@ const descriptionHtml = entry.data.description
   : "";
 const bodyHtml = bodyMarkdown ? await renderMd(bodyMarkdown) : "";
 
-// 本文中の見出し(# / ##)にidを付与し、目次項目として収集する
+// 本文中の見出し(# / ##)にidを付与し、目次項目として収集する。
+// Markdownの見出しをHTMLに変換しただけでは <h1>説明</h1> のようにidが付かず、
+// ページ内リンク(#説明 のようなURL)で直接ジャンプさせることができない。
+// そこで変換後のHTML文字列に対して正規表現で <h1>や<h2>を検索し、
+// 見出しのテキストをそのままidとして付け直す(例: <h1 id="説明">説明</h1>)と同時に、
+// PageTocコンポーネントに渡す項目(tocSections)としても記録している。
 const usedTocIds = new Set(["overview", "links"]);
 const tocSections: { id: string; label: string }[] = [];
 const bodyHtmlWithIds = bodyHtml.replace(/<h([12])>(.*?)<\/h\1>/g, (_match, level, inner) => {
@@ -96,6 +133,10 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
                 </span>
             </div>
             <h1>{entry.data.title}</h1>
+            {/* set:html={変数} はAstro独自のディレクティブ(属性のように書く特別な指示)。
+                通常 {変数} と書くと文字列としてそのまま(エスケープされて)表示されるが、
+                set:html を使うと「その変数の中身をHTMLとして解釈して差し込む」動作になる。
+                renderMdで生成したHTML文字列(<p>や<h2>タグを含む)を画面に反映するために使っている。 */}
             {descriptionHtml && (
                 <div class="project-description" set:html={descriptionHtml}></div>
             )}

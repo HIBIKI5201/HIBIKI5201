@@ -1,4 +1,8 @@
 ---
+// Astroでは src/pages/ 以下に置いたファイルが、そのままURLのルーティングになる
+// (「ファイルベースルーティング」と呼ばれる仕組み)。
+// このファイル src/pages/index.astro は、サイトのトップページ("/")に対応する。
+// 例えば src/pages/about.astro を作れば自動的に "/about" ページになる、という具合。
 import Layout from "../layouts/Layout.astro";
 import PageToc from "../components/PageToc.astro";
 import Hero from "../components/Hero.astro";
@@ -8,6 +12,9 @@ import TrackRecord from "../components/TrackRecord.astro";
 import Career from "../components/Career.astro";
 import Footer from "../components/Footer.astro";
 
+// トップページ内の各セクションへジャンプするSticky目次(PageToc)に渡す項目一覧。
+// id は下のHTMLで振っている <div id="top"> などの id属性と対応させる必要がある
+// (PageToc内部で `#${id}` へのリンクと `document.getElementById(id)` の両方に使われる)。
 const tocItems = [
 	{ id: "top", label: "TOP" },
 	{ id: "profile", label: "PROFILE" },
@@ -17,6 +24,13 @@ const tocItems = [
 ];
 ---
 
+<!--
+    <Layout> ... </Layout> のように、Layoutコンポーネントで他のコンポーネント群を
+    「くるむ」書き方。この間に書いた内容が、Layout.astro側の <slot /> の位置に差し込まれる。
+    ここではHero(自己紹介)・Profile(プロフィール)・MissionArchive(注目プロジェクト)・
+    TrackRecord(実績)・Career(職歴)という各セクション用コンポーネントを、
+    横に並べるように読み込んで1枚のページを組み立てている。
+-->
 <Layout>
 	<PageToc items={tocItems} />
 	<div id="top"><Hero /></div>
@@ -28,6 +42,9 @@ const tocItems = [
 </Layout>
 
 <style>
+	/* Sticky目次やヘッダーが画面上部に固定表示されるため、
+	   目次のリンクをクリックしてジャンプしたときに見出しが隠れないよう、
+	   各セクションの手前に余白(scroll-margin-top)を確保している。 */
 	#top, #profile, #projects, #records, #career {
 		scroll-margin-top: 140px;
 	}
