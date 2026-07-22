@@ -1,0 +1,392 @@
+Personal Brand Logo Design Specification
+Project
+
+YT Personal Brand Logo
+
+Version: 1.0
+
+Goal
+
+個人ブランドとして長期間使用できるロゴを制作する。
+
+用途
+
+GitHub
+Portfolio
+Business Card
+Website
+Game Splash Screen
+SNS Icon
+Presentation
+
+ロゴは白黒のみで成立すること。
+
+Design Concept
+
+テーマ
+
+Game Programmer × Vampire × Music × Military
+
+ゲームプログラマーとしての技術力を表現しながら、
+
+吸血鬼
+音楽
+ミリタリー
+
+を自然に融合する。
+
+派手なイラストではなく、
+
+企業ロゴのようなミニマルデザイン
+
+を目指す。
+
+Keywords
+Minimal
+Symmetry
+Monochrome
+Gothic
+Technical
+Premium
+Engineering
+Emblem
+Crest
+Color
+
+Only
+
+Black
+White
+
+将来的に
+
+Dark Gray
+Silver
+
+程度の追加は可。
+
+Layout
+        Bat
+
+      Hexagon
+
+──────────────
+     Y   T
+──────────────
+
+ PCB      PCB
+
+ Assembly  Struct
+
+    Bullets
+
+全体は左右対称。
+
+Main Elements
+1. Typography
+
+イニシャル
+
+YT
+
+文字は
+
+Gothic
+Vampire
+Sharp
+Serif
+
+を融合したオリジナルデザイン。
+
+既存フォントは使用しない。
+
+SVG Pathで作成する。
+
+2. Hexagon
+
+背景は正六角形。
+
+条件
+
+線のみ
+二重線
+均等な余白
+完全な左右対称
+3. Music
+
+ロゴ中央を
+
+五線譜
+
+が横断する。
+
+含める要素
+
+Staff
+Treble Clef
+Musical Notes
+
+装飾は控えめ。
+
+4. Vampire
+
+吸血鬼要素は
+
+コウモリ
+
+のみ。
+
+条件
+
+上部中央に小型コウモリ
+Y,Tの上部に翼を融合
+可愛いよりスタイリッシュ
+
+牙や血は使用しない。
+
+5. Programming
+
+最重要要素。
+
+テーマ
+
+Low-level Programming
+
+System Programming
+
+Computer Architecture
+
+Design
+
+装飾候補
+
+Assembly
+
+MOV
+CMP
+JNE
+CALL
+RET
+
+C++
+
+struct
+
+uintptr_t
+
+volatile
+
+atomic
+
+Memory
+
+0xDEADBEEF
+
+0xCAFEBABE
+
+CPU
+
+PCB Pattern
+Bus
+Register
+
+実際のコードとして成立する必要はない。
+
+世界観として使う。
+
+6. Military
+
+アクセントのみ。
+
+候補
+
+Bullets
+Chevron
+Small Star
+Dog Tag
+NATO Style
+
+武器は主役にしない。
+
+剣は吸血鬼の意匠としてのみ使用可。
+
+SVG Requirements
+
+必須
+
+SVG 2.0
+
+viewBox
+
+必須
+
+viewBox="0 0 1024 1024"
+Layer Structure
+logo
+
+background
+
+hexagon
+
+music
+
+typography
+
+vampire
+
+sword
+
+pcb
+
+assembly
+
+cpp
+
+military
+
+decoration
+
+すべて
+
+<g id="">
+
+で管理。
+
+Naming
+
+例
+
+<g id="hexagon">
+
+<g id="music">
+
+<g id="typography">
+
+<g id="pcb">
+
+<g id="assembly">
+Typography
+
+文字は
+
+<path>
+
+で作成。
+
+フォント依存は禁止。
+
+Coding Style
+
+インデント
+
+2 spaces
+
+属性は縦に並べる。
+
+例
+
+<path
+  id="letter-y"
+  fill="#FFFFFF"
+  d="..." />
+Directory Structure
+Logo/
+
+    README.md
+
+    svg/
+        logo.svg
+        logo-outline.svg
+        favicon.svg
+
+    png/
+        logo-512.png
+        logo-1024.png
+
+    pdf/
+        logo.pdf
+
+    source/
+        logo.sketch.md
+README
+
+説明を書く。
+
+含める内容
+
+Concept
+Symbol Meaning
+Usage
+License
+Design Rules
+
+必須
+
+✅ 白黒だけで成立
+
+✅ 小さくしても視認性が高い
+
+✅ SVGのみで構成
+
+✅ フォント依存なし
+
+✅ 左右対称
+
+✅ ミニマル
+
+禁止
+
+❌ グラデーション
+
+❌ 写実
+
+❌ 3D
+
+❌ 発光
+
+❌ テクスチャ
+
+❌ AI生成画像のトレース
+
+❌ 既存ロゴの模倣
+
+Deliverables
+
+最終成果物
+
+Logo/
+
+    README.md
+
+    svg/
+        logo.svg
+        logo-outline.svg
+        favicon.svg
+
+    png/
+        logo-512.png
+        logo-1024.png
+
+    pdf/
+        logo.pdf
+
+    source/
+        logo.sketch.md
+Future Versions
+v1.0
+基本デザイン
+
+v1.1
+PCB改善
+
+v1.2
+Typography改善
+
+v2.0
+ブランド刷新
+エージェントへの追加指示
+AI画像をトレースしないこと。 本プロジェクトは既存画像を参考イメージとしつつ、ゼロからオリジナルのベクターアートとして設計する。
+SVGはソースコードとして保守可能であること。 id、コメント、グループ構造を整理し、GitHubで差分レビューしやすい記述にする。
+ロゴはアイコン（32px程度）からA4印刷まで視認性を保つこと。 細線や装飾は縮小時の見え方を考慮して設計する。
+コミット単位で制作すること。 例: feat: create hexagon base → feat: add typography → feat: add music layer → feat: add pcb decorations → refactor: simplify paths。
+ライセンス面に配慮すること。 使用する図形・パス・フォント・シンボルはすべてオリジナルまたはライセンス上問題のないものとし、第三者の知的財産を侵害しないこと。

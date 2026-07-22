@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "profile-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "Profile", "run", "dev"],
+      "port": 4321
+    }
+  ]
+}

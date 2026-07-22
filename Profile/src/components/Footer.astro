@@ -1,0 +1,20 @@
+---
+// フッタコンポーネント。サイトの著作権表示などを含む。
+// Layout.astroから読み込まれるHeaderとは違い、こちらは各ページ(index.astroなど)側で
+// 個別に <Footer /> と書いて配置している。ページによってフッターの有無や位置を
+// 変えたい場合があるため、あえて共通レイアウトには含めていない。
+---
+
+<footer class="mil-border">
+    <p>&copy; 2026 TAKUTO YAHATA. All rights reserved.</p>
+</footer>
+
+<style>
+    footer {
+        text-align: center;
+        padding: 20px;
+        font-size: 0.8rem;
+        opacity: 0.6;
+        margin-top: 60px;
+    }
+</style>

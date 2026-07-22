@@ -1,0 +1,129 @@
+---
+// プロフィールセクション。個人の興味やスキル、好きなゲームなどを紹介する。
+
+// フロントマター(--- ---の間)は普通のTypeScriptなので、関数を定義してもよい。
+// ここではUnity/C#などの「経験年数」を、開始日から今日までの差分として動的に計算している。
+// ビルド時(サイトを作った瞬間)の日付で計算されるため、日付をハードコードで書き換え続けなくても
+// 経験年数の表示が自動で正しくなっていく。
+function getExperience(startDate: string) {
+    const start = new Date(startDate);
+    const today = new Date();
+
+    let years = today.getFullYear() - start.getFullYear();
+    let months = today.getMonth() - start.getMonth();
+
+    // 日付がまだ来ていない場合は1か月引く。
+    if (today.getDate() < start.getDate()) {
+        months--;
+    }
+
+    // 月がマイナスになったら年から借りる。
+    if (months < 0) {
+        years--;
+        months += 12;
+    }
+
+    return `${years}Y${months}M`;
+}
+
+// 関数の戻り値(例: "2Y6M")を、下のテンプレート内で {unityExp} のように埋め込んで使う。
+const unityExp = getExperience("2024-01-01");
+const csharpExp = getExperience("2024-04-01");
+const unrealExp = getExperience("2025-04-01");
+const cppExp = getExperience("2025-07-01");
+---
+
+<section class="profile">
+    <h2 class="section-title">PROFILE <small>// BIOGRAPHY</small></h2>
+    <div class="grid-2">
+        <div class="mil-border card">
+            <h3>Interests</h3>
+            <p>ゲーム研究、ストーリー考察、勉強会、ボーイスカウト</p>
+        </div>
+        <div class="mil-border card">
+            <h3>Preferred Genres</h3>
+            <p>TPS、RTS、シミュレーション</p>
+        </div>
+    </div>
+    <div class="mil-border card mt">
+        <h3>Skills</h3>
+        <!-- style="width: 85%" のように、フロントマターで計算した数値ではなく
+             決め打ちの数値を直接書いている箇所は、習熟度を手動で調整するためのもの。
+             {unityExp} の部分だけが動的(自動計算)で、ゲージの長さ自体は固定値。 -->
+        <div class="skill-bar"><div class="fill" style="width: 85%">Unity <span class="exp">[{unityExp}]</span></div></div>
+        <div class="skill-bar"><div class="fill" style="width: 85%">C# <span class="exp">[{csharpExp}]</span></div></div>
+        <div class="skill-bar"><div class="fill orange" style="width: 25%">Unreal Engine <span class="exp">[{unrealExp}]</span></div></div>
+        <div class="skill-bar"><div class="fill orange" style="width: 25%">C++ <span class="exp">[{cppExp}]</span></div></div>
+    </div>
+    <div class="mil-border card mt">
+        <h3>Favorite Games</h3>
+        <p>Warframe、メタルギアシリーズ、ドールズフロントライン</p>
+    </div>
+</section>
+
+<style>
+    .section-title {
+        font-size: 1.8rem;
+        margin-bottom: 30px;
+        border-left: 5px solid var(--accent-color);
+        padding-left: 15px;
+        color: var(--accent-color);
+    }
+
+    .section-title small {
+        font-size: 0.9rem;
+        color: var(--text-sub);
+    }
+
+    .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    @media (max-width: 600px) {
+        .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    .card h3 {
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+        color: var(--accent-color);
+        border-bottom: 1px solid rgba(var(--accent-color-rgb), 0.2);
+        padding-bottom: 5px;
+    }
+
+    .mt { margin-top: 20px; }
+
+    .skill-bar {
+        height: 12px;
+        background: rgba(255, 255, 255, 0.1);
+        margin-bottom: 15px;
+        position: relative;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .skill-bar .fill {
+        height: 100%;
+        background: var(--accent-color);
+        display: flex;
+        align-items: center;
+        padding-left: 10px;
+        font-size: 0.7rem;
+        color: #fff;
+        font-weight: bold;
+        white-space: nowrap;
+        box-shadow: 0 0 10px rgba(var(--accent-color-rgb), 0.3);
+    }
+
+    .skill-bar .fill.orange {
+        background: var(--warning-color);
+        box-shadow: 0 0 10px rgba(var(--accent-color-rgb), 0.2);
+    }
+
+    .skill-bar .exp {
+        margin-left: 6px;
+        opacity: 0.75;
+        font-weight: normal;
+    }
+</style>

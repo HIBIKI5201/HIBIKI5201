@@ -1,0 +1,645 @@
+---
+// プロジェクトの詳細ページ。
+//
+// ファイル名が [slug].astro のように角括弧になっているのは「動的ルート」というAstroの仕組み。
+// 1つのファイルから、プロジェクトの数だけページを自動生成する(project-001, project-002, ... それぞれに
+// /projects/project-001/ のようなURLが割り当たる)。
+// この[slug]という名前が、下のgetStaticPathsが返す params.slug の値に対応している。
+import { getCollection } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import PageToc from "../../components/PageToc.astro";
+// unified/remark/rehype は「Markdown文字列をHTML文字列に変換する」ための定番ライブラリ群。
+// remark系がMarkdownの解析、rehype系がHTMLへの変換を担当し、.use()でパイプラインのように
+// 変換ステップをつなげていく(下のrenderMd関数を参照)。
+import { unified } from "unified";
+import remarkParse from "remark-parse";
+import remarkGfm from "remark-gfm"; // GitHub Flavored Markdown(表組みなど)に対応させる拡張
+import remarkRehype from "remark-rehype";
+import rehypeStringify from "rehype-stringify";
+
+// getStaticPaths は動的ルート([slug].astro)専用の特別な関数。
+// 「このページが実際に生成すべきURLの一覧」をビルド時に教えるためのもの。
+// ここではprojectsコレクションの全件をもとに、1件につき1ページ分のパラメータを作っている。
+// 戻り値の params.slug がURLの一部になり、props.entry がそのページ内で使えるデータになる
+// (このentryは下の `const { entry } = Astro.props;` で受け取っている)。
+export async function getStaticPaths() {
+  const missions = await getCollection("projects"); //content/projectsのデータを受け取る。
+  const activeMissions = missions.filter(entry => !!entry.data.projectCode && entry.data.projectCode.trim() !== "");
+  return activeMissions.map(entry => ({
+    params: { slug: entry.slug }, props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+// entry.render() は、Content Collectionsが用意している「このMarkdownファイルの本文をHTMLとして
+// レンダリングするコンポーネント」を取り出すメソッド。取り出した<Content />は下のテンプレートで
+// `<Content />` とタグのように書くだけで、本文がそのまま描画される(フォールバック用途、詳細は下記)。
+const { Content } = await entry.render();
+const slug = Array.isArray(entry.slug) ? entry.slug.join("/") : entry.slug;
+// import.meta.glob はAstroの基盤であるVite(ビルドツール)が提供する機能。
+// 指定したパターンに一致する複数のファイルを、一度にまとめて読み込める。
+// { as: "raw" } は「Markdownとして解釈せず、ファイルの中身をただの文字列として読む」という意味。
+// entry.render()(上のContentコンポーネント)だけだと本文全体しか扱えず、
+// 特定の見出し(## overview)だけを抜き出すような細かい加工ができないため、
+// 生のMarkdown文字列を自前で正規表現処理するためにここで再度読み込んでいる。
+const projectFiles = import.meta.glob("../../content/projects/*.md", { as: "raw", eager: true });
+const projectPath = `../../content/projects/${slug}.md`;
+const markdownSource = projectFiles[projectPath];
+if (!markdownSource) {
+  throw new Error(`Project markdown not found: ${projectPath}`);
+}
+// frontmatter部分(--- ... ---)を正規表現で取り除き、Markdown本文だけを取り出す。
+const markdownBody = markdownSource.replace(/^---[\s\S]*?---\s*/m, "");
+
+// "## team info" という専用の見出しの直後から、次の見出しが出てくる直前までを抜き出す。
+// 「制作チーム：」「担当箇所：」は、## overview側の自由記述と誤って一致しないよう、
+// この専用見出しの下に書かれている場合だけ反応するようにしている。
+const teamInfoMatch = markdownBody.match(/^##\s*team info\s*[\r\n]+([\s\S]*?)(?=^#{1,6}\s|\z)/im);
+const teamInfoMarkdown = teamInfoMatch ? teamInfoMatch[1].trim() : "";
+const teamMatch = teamInfoMarkdown.match(/^制作チーム[:：]\s*(.+)$/m);
+const roleMatch = teamInfoMarkdown.match(/^担当箇所[:：]\s*(.+)$/m);
+const teamComposition = teamMatch ? teamMatch[1].trim() : "";
+const roleInCharge = roleMatch ? roleMatch[1].trim() : "";
+const hasTeamInfo = !!(teamComposition || roleInCharge);
+
+// "## team info" セクションはこの後の処理に含めないよう、本文から取り除いておく。
+const markdownBodyWithoutTeamInfo = teamInfoMatch
+  ? markdownBody.replace(/^##\s*team info\s*[\r\n]+[\s\S]*?(?=^#{1,6}\s|\z)/im, "").trim()
+  : markdownBody;
+
+// "## overview" という見出しの直後から、次の見出しが出てくる直前までを正規表現で抜き出す。
+// これを「概要(OVERVIEW)」として画面上部の専用エリアに表示し、
+// それ以外の本文(説明・アピールポイントなど)は下のmarkdown-contentエリアにまとめて表示する、
+// という2段構成にするための下準備。
+const overviewMatch = markdownBodyWithoutTeamInfo.match(/^##\s*overview\s*[\r\n]+([\s\S]*?)(?=^#{1,6}\s|\z)/im);
+const overviewMarkdown = overviewMatch ? overviewMatch[1].trim() : "";
+const bodyMarkdown = overviewMarkdown
+  ? markdownBodyWithoutTeamInfo.replace(/^##\s*overview\s*[\r\n]+[\s\S]*?(?=^#{1,6}\s|\z)/im, "").trim()
+  : markdownBodyWithoutTeamInfo;
+
+// MarkdownテキストをHTML文字列に変換する関数。
+// unified().use(A).use(B)... という書き方は「処理をパイプのようにつなげる」ライブラリ共通の作法で、
+// ここでは remarkParse(文字列→Markdown構文木) → remarkGfm(表組み等に対応)
+// → remarkRehype(Markdown構文木→HTML構文木) → rehypeStringify(HTML構文木→文字列)
+// の順に変換している。戻り値はただの文字列なので、下で set:html={overviewHtml} のように使う。
+async function renderMd(source: string) {
+  return String(await unified()
+    .use(remarkParse)
+    .use(remarkGfm)
+    .use(remarkRehype, { allowDangerousHtml: true })
+    .use(rehypeStringify, { allowDangerousHtml: true })
+    .process(source));
+}
+
+const overviewHtml = overviewMarkdown
+  ? await renderMd(overviewMarkdown)
+  : entry.data.overview
+    ? await renderMd(entry.data.overview)
+    : "";
+const descriptionHtml = entry.data.description
+  ? await renderMd(entry.data.description)
+  : "";
+const bodyHtml = bodyMarkdown ? await renderMd(bodyMarkdown) : "";
+
+// 本文中の見出し(# / ##)にidを付与し、目次項目として収集する。
+// Markdownの見出しをHTMLに変換しただけでは <h1>説明</h1> のようにidが付かず、
+// ページ内リンク(#説明 のようなURL)で直接ジャンプさせることができない。
+// そこで変換後のHTML文字列に対して正規表現で <h1>や<h2>を検索し、
+// 見出しのテキストをそのままidとして付け直す(例: <h1 id="説明">説明</h1>)と同時に、
+// PageTocコンポーネントに渡す項目(tocSections)としても記録している。
+const usedTocIds = new Set(["overview", "links"]);
+const tocSections: { id: string; label: string }[] = [];
+const bodyHtmlWithIds = bodyHtml.replace(/<h([12])>(.*?)<\/h\1>/g, (_match, level, inner) => {
+  const text = inner.replace(/<[^>]+>/g, "").trim();
+  const baseId = text.trim().replace(/\s+/g, "-") || `section-${tocSections.length + 1}`;
+  let id = baseId;
+  let suffix = 2;
+  while (usedTocIds.has(id)) {
+    id = `${baseId}-${suffix}`;
+    suffix++;
+  }
+  usedTocIds.add(id);
+  tocSections.push({ id, label: text });
+  return `<h${level} id="${id}">${inner}</h${level}>`;
+});
+
+const hasLinksSection = !!(entry.data.videoUrl || entry.data.releaseUrl || entry.data.repoUrl);
+const tocItems = [
+  { id: "overview", label: "OVERVIEW" },
+  ...(hasLinksSection ? [{ id: "links", label: "LINKS" }] : []),
+  ...tocSections,
+];
+
+// BASE_URLの末尾に / があるかを確認し、無ければ付けます
+let baseUrl = import.meta.env.BASE_URL;
+if (!baseUrl.endsWith("/")) baseUrl += "/";
+---
+
+<Layout title={`${entry.data.title} - PROJECT DETAILS`}>
+    <div class="mission-detail-container">
+        <a href={baseUrl} class="back-btn">&lt;&lt; RETURN TO HOME</a>
+
+        <PageToc items={tocItems} />
+
+        <header class="mil-border detail-header">
+            <div class="header-top">
+                <span class="id">{entry.data.projectCode}</span>
+                <span class={`type ${entry.data.productionType.toLowerCase()}`}>
+                    {entry.data.productionType === 'SOLO' ? 'Solo' : 
+                     entry.data.productionType === 'TEAM' ? 'Team' : 'Other'}
+                </span>
+            </div>
+            <h1>{entry.data.title}</h1>
+            {/* set:html={変数} はAstro独自のディレクティブ(属性のように書く特別な指示)。
+                通常 {変数} と書くと文字列としてそのまま(エスケープされて)表示されるが、
+                set:html を使うと「その変数の中身をHTMLとして解釈して差し込む」動作になる。
+                renderMdで生成したHTML文字列(<p>や<h2>タグを含む)を画面に反映するために使っている。 */}
+            {descriptionHtml && (
+                <div class="project-description" set:html={descriptionHtml}></div>
+            )}
+            <div class="meta">
+                <span class="label">DATE:</span> {entry.data.date}
+                
+                <div class="spec-sheet">
+                    <div class="spec-row">
+                        <span class="spec-label">CORE STACK</span>
+                        <div class="tags">
+                            {entry.data.stack.map(s => <span class="tag stack">{s}</span>)}
+                        </div>
+                    </div>
+                    <div class="spec-row">
+                        <span class="spec-label">TECHNOLOGIES</span>
+                        <div class="tags">
+                            {entry.data.technologies.map(t => <span class="tag tech">{t}</span>)}
+                        </div>
+                    </div>
+                    {entry.data.tools && entry.data.tools.length > 0 && (
+                        <div class="spec-row">
+                            <span class="spec-label">TOOLS & LIBRARIES</span>
+                            <div class="tags">
+                                {entry.data.tools.map(tool => <span class="tag tool">{tool}</span>)}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </header>
+
+        {entry.data.thumbnail && (
+            <div class="mission-hero mil-border">
+                <img src={entry.data.thumbnail.startsWith('http') ? entry.data.thumbnail : `${import.meta.env.BASE_URL.replace(/\/$/, '')}/${entry.data.thumbnail.replace(/^\//, '')}`} alt={entry.data.title} class="hero-image" />
+            </div>
+        )}
+
+        {hasTeamInfo && (
+            <div class="mil-border team-info-box">
+                {teamComposition && (
+                    <div class="team-info-row">
+                        <span class="team-info-label">TEAM</span>
+                        <span class="team-info-value">{teamComposition}</span>
+                    </div>
+                )}
+                {roleInCharge && (
+                    <div class="team-info-row">
+                        <span class="team-info-label">ROLE</span>
+                        <span class="team-info-value">{roleInCharge}</span>
+                    </div>
+                )}
+            </div>
+        )}
+
+        <section class="mil-border intel-module">
+            <div class="intel-grid">
+                <div class="intel-main" id="overview">
+                    <div class="asset-label">// PROJECT OVERVIEW</div>
+                    <div class="overview-content" set:html={overviewHtml}></div>
+                </div>
+
+                {(entry.data.videoUrl || entry.data.releaseUrl || entry.data.repoUrl) && (
+                    <div class="intel-side" id="links">
+                        {entry.data.videoUrl && (
+                            <div class="intel-asset-box">
+                                <div class="asset-label">// DEMO VIDEO</div>
+                                <div class="video-container">
+                                    {entry.data.videoUrl.includes('youtube.com') || entry.data.videoUrl.includes('youtu.be') ? (
+                                        <iframe 
+                                            src={entry.data.videoUrl.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/')} 
+                                            title="Project Demo"
+                                            frameborder="0" 
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                            allowfullscreen
+                                        ></iframe>
+                                    ) : (
+                                        <a href={entry.data.videoUrl} target="_blank" class="asset-link-btn">WATCH DEMO >></a>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
+                        {(entry.data.releaseUrl || entry.data.repoUrl) && (
+                            <div class="intel-asset-box">
+                                <div class="asset-label">// PROJECT LINKS</div>
+                                <div class="link-grid">
+                                    {entry.data.releaseUrl && (
+                                        <a href={entry.data.releaseUrl} target="_blank" class="asset-link-btn highlight">
+                                            VIEW PROJECT
+                                        </a>
+                                    )}
+                                    {entry.data.repoUrl && (
+                                        <a href={entry.data.repoUrl} target="_blank" class="asset-link-btn">
+                                            SOURCE CODE
+                                        </a>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
+        </section>
+
+        <section class="mil-border mission-body-full">
+            <div class="content-warning">LOADING PROJECT DATA... DONE.</div>
+            <div class="markdown-content">
+                {bodyHtml ? <div set:html={bodyHtmlWithIds} /> : <Content />}
+            </div>
+        </section>
+
+        <div class="footer-actions">
+            <a href={baseUrl} class="mil-border action-btn">CLOSE DETAILS</a>
+        </div>
+    </div>
+</Layout>
+
+<style>
+    :where(.mission-detail-container) {
+        --accent-color: #a070ff;
+        --accent-color-rgb: 160, 112, 255;
+        --accent-glow: #c0a0ff;
+    }
+
+    .mission-detail-container {
+        padding-top: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .back-btn {
+        display: inline-block;
+        margin-bottom: 20px;
+        font-size: 0.8rem;
+        font-weight: bold;
+        color: var(--accent-color);
+        text-decoration: none;
+    }
+
+    .detail-header {
+        margin-bottom: 30px;
+        padding: 30px;
+    }
+
+    .header-top {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+    }
+
+    .id {
+        color: var(--accent-color);
+        border: 1px solid var(--accent-color);
+        padding: 2px 12px;
+        font-weight: bold;
+    }
+
+    .type {
+        padding: 2px 12px;
+        font-weight: bold;
+        color: #fff;
+    }
+    .type.solo { background: var(--tag-bg); border: 1px solid var(--accent-color); color: var(--accent-color); }
+    .type.team { background: var(--accent-color); color: #000; border: 1px solid var(--accent-glow); }
+    .type.other { background: #333; border: 1px solid #666; color: #fff; }
+
+    h1 {
+        font-size: 2.5rem;
+        color: #fff;
+        margin-bottom: 20px;
+        letter-spacing: 0.05em;
+    }
+
+    .meta {
+        font-size: 0.9rem;
+        color: var(--text-sub);
+    }
+
+    .label { color: var(--accent-color); font-weight: bold; }
+
+    /* Spec Sheet Styling */
+    .spec-sheet {
+        margin-top: 25px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        background: rgba(255, 255, 255, 0.03);
+        padding: 15px;
+        border-left: 2px solid var(--accent-color);
+    }
+
+    .spec-row {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    @media (max-width: 768px) {
+        .spec-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+        }
+    }
+
+    .spec-label {
+        font-size: 0.65rem;
+        font-weight: bold;
+        color: var(--text-sub);
+        min-width: 120px;
+        letter-spacing: 0.1em;
+    }
+
+    .tags {
+        display: flex;
+        gap: 10px;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        -webkit-overflow-scrolling: touch;
+        flex-grow: 1;
+    }
+
+    .tags::-webkit-scrollbar { height: 2px; }
+    .tags::-webkit-scrollbar-thumb { background: rgba(var(--accent-color-rgb), 0.2); }
+
+    .tag {
+        flex: 0 0 auto;
+        color: var(--accent-color);
+        background: rgba(var(--accent-color-rgb), 0.1);
+        border: 1px solid rgba(var(--accent-color-rgb), 0.3);
+        padding: 2px 10px;
+        font-size: 0.8rem;
+        font-weight: bold;
+    }
+
+    .tag.stack::before { content: ":: "; opacity: 0.6; }
+    
+    .tag.tech {
+        color: var(--accent-glow);
+        background: rgba(var(--accent-color-rgb), 0.1);
+        border-color: rgba(var(--accent-color-rgb), 0.3);
+    }
+    .tag.tech::before { content: "> "; opacity: 0.6; }
+
+    .tag.tool {
+        color: var(--text-sub);
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+    .tag.tool::before { content: "+ "; opacity: 0.6; }
+
+    .mission-hero {
+        margin-bottom: 30px;
+        height: 400px;
+        overflow: hidden;
+        background: #000;
+        border-color: rgba(var(--accent-color-rgb), 0.3);
+    }
+
+    .hero-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.9;
+    }
+
+    /* Team Info Box */
+    .team-info-box {
+        margin-bottom: 30px;
+        padding: 20px 30px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        background: rgba(26, 20, 20, 0.4);
+        border-color: rgba(var(--accent-color-rgb), 0.3);
+    }
+
+    .team-info-row {
+        display: flex;
+        align-items: baseline;
+        gap: 20px;
+    }
+
+    @media (max-width: 768px) {
+        .team-info-row {
+            flex-direction: column;
+            gap: 4px;
+        }
+    }
+
+    .team-info-label {
+        font-size: 0.65rem;
+        font-weight: bold;
+        color: var(--text-sub);
+        min-width: 120px;
+        flex-shrink: 0;
+        letter-spacing: 0.1em;
+    }
+
+    .team-info-value {
+        color: var(--text-main);
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+    /* Intel Module Container */
+    .intel-module {
+        margin-bottom: 30px;
+        background: rgba(26, 20, 20, 0.6);
+        overflow: hidden;
+        border-color: rgba(var(--accent-color-rgb), 0.3);
+    }
+
+    .intel-grid {
+        display: grid;
+        grid-template-columns: 1fr 400px;
+        min-height: 350px;
+    }
+
+    @media (max-width: 992px) {
+        .intel-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .intel-main {
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        border-right: 1px solid rgba(var(--accent-color-rgb), 0.2);
+    }
+
+    @media (max-width: 992px) {
+        .intel-main {
+            border-right: none;
+            border-bottom: 1px solid rgba(var(--accent-color-rgb), 0.2);
+        }
+    }
+
+    .intel-side {
+        padding: 30px;
+        background: rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+    }
+
+    .intel-asset-box {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .overview-content {
+        font-size: 1.15rem;
+        line-height: 1.8;
+        color: var(--text-main);
+        flex-grow: 1;
+        display: block;
+        padding-top: 10px;
+        white-space: pre-wrap;
+    }
+
+    .asset-label {
+        font-size: 0.7rem;
+        font-weight: bold;
+        color: var(--accent-color);
+        letter-spacing: 0.1em;
+        opacity: 0.8;
+    }
+
+    .video-container {
+        position: relative;
+        padding-bottom: 56.25%;
+        height: 0;
+        overflow: hidden;
+        background: #000;
+        border: 1px solid rgba(var(--accent-color-rgb), 0.2);
+    }
+
+    .video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .link-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .asset-link-btn {
+        display: block;
+        padding: 12px;
+        text-align: center;
+        background: rgba(var(--accent-color-rgb), 0.05);
+        border: 1px solid rgba(var(--accent-color-rgb), 0.3);
+        color: var(--accent-color);
+        text-decoration: none;
+        font-size: 0.8rem;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+
+    .asset-link-btn:hover {
+        background: rgba(var(--accent-color-rgb), 0.15);
+        border-color: var(--accent-color);
+        transform: translateY(-2px);
+        box-shadow: 0 0 15px rgba(var(--accent-color-rgb), 0.3);
+        color: #fff;
+    }
+
+    .asset-link-btn.highlight {
+        background: var(--accent-color);
+        color: var(--bg-color);
+        border-color: var(--accent-color);
+        font-weight: 800;
+    }
+
+    .asset-link-btn.highlight:hover {
+        background: var(--accent-glow);
+        box-shadow: 0 0 20px rgba(var(--accent-color-rgb), 0.5);
+        color: var(--bg-color);
+    }
+
+    /* Body Full Section */
+    .mission-body-full {
+        padding: 40px;
+        background: rgba(26, 20, 20, 0.4);
+        margin-bottom: 40px;
+        border-color: rgba(var(--accent-color-rgb), 0.3);
+    }
+
+    .content-warning {
+        font-size: 0.7rem;
+        color: var(--accent-color);
+        margin-bottom: 30px;
+        border-bottom: 1px solid rgba(var(--accent-color-rgb), 0.2);
+        padding-bottom: 10px;
+    }
+
+    .markdown-content {
+        line-height: 1.8;
+        color: var(--text-main);
+    }
+
+    .markdown-content :global(p) { 
+        margin-bottom: 20px; 
+        white-space: pre-wrap;
+    }
+    .markdown-content :global(h1),
+    .markdown-content :global(h2) {
+        color: var(--accent-color);
+        font-size: 1.4rem;
+        margin: 40px 0 20px;
+        border-bottom: 1px solid var(--accent-color);
+        scroll-margin-top: 140px;
+    }
+
+    #overview,
+    #links {
+        scroll-margin-top: 140px;
+    }
+
+    .footer-actions {
+        margin-top: 40px;
+        text-align: center;
+    }
+
+    .action-btn {
+        display: inline-block;
+        padding: 15px 40px;
+        font-weight: bold;
+        color: var(--accent-color);
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .action-btn:hover {
+        background: rgba(var(--accent-color-rgb), 0.1);
+        box-shadow: 0 0 20px rgba(var(--accent-color-rgb), 0.3);
+        color: #fff;
+        transform: scale(1.05);
+    }
+</style>

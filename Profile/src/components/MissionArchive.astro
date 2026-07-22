@@ -1,0 +1,382 @@
+---
+// プロジェクトのピックアップセクション。特に注目してほしいプロジェクトをカード形式で表示する。
+// トップページ専用で、src/content/projects/ の中から isPickup: true が付いたものだけを表示する。
+// 全件一覧は src/pages/projects/index.astro が別に担当している(似ているが役割が違う)。
+import { getCollection } from "astro:content";
+// astro:assets の <Image /> は、ビルド時に画像を自動でリサイズ・最適化(webp変換など)してくれる
+// Astro標準のコンポーネント。普通の<img>タグの代わりに使うことで、
+// 「表示サイズに対して無駄に大きい画像を読み込んでしまう」問題を防げる。
+import { Image } from "astro:assets";
+
+// getCollection("projects", ({ data }) => ...) は、src/content/config.ts で定義した
+// "projects" コレクションの全Markdownファイルを読み込み、第2引数のコールバック関数が
+// true を返したものだけに絞り込む(配列のfilterと同じ考え方)。
+// data には各Markdownのfrontmatterがオブジェクトとして入っている。
+const missions = await getCollection("projects", ({ data }) => {
+    return data.isPickup === true && !!data.projectCode && data.projectCode.trim() !== "";
+});
+// 配列のsortメソッドで日付の新しい順に並べ替え。localeCompareで文字列としての日付を比較している。
+missions.sort((a, b) => b.data.date.localeCompare(a.data.date));
+
+let baseUrl = import.meta.env.BASE_URL;
+if (!baseUrl.endsWith("/")) baseUrl += "/";
+
+// 画像パスを解決するヘルパー
+const resolveImagePath = (path: string) => {
+    if (path.startsWith('http')) return path;
+    const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+    // baseUrlを考慮したフルパスを返す
+    return `${baseUrl}${cleanPath}`;
+};
+---
+
+<section class="mission-archive">
+    <h2 class="section-title">FEATURED PROJECTS <small>// PICKUP</small></h2>
+
+    <div class="mission-grid">
+        {/* missions.map(...) で取得済みの配列をループし、1件ごとにカードのHTMLを生成する。
+            index (何番目か)を使って、一番最初の1枚だけ画像を優先的に読み込む(下記loading参照)。 */}
+        {missions.map((mission, index) => (
+            <a href={`${baseUrl}projects/${mission.slug}/`} class="mission-link">
+                <div class="mil-border mission-item">
+                    {mission.data.thumbnail && (
+                        <div class="mission-thumbnail">
+                            {/* 一番目(index === 0)の画面に最初に見える画像だけ即座に読み込み(loading="eager")、
+                                残りは画面に近づくまで読み込みを遅らせる(lazy)ことでページの初期表示を速くする。 */}
+                            <Image
+                                src={resolveImagePath(mission.data.thumbnail)}
+                                alt={mission.data.title}
+                                width={600}
+                                height={400}
+                                format="webp"
+                                quality={80}
+                                loading={index === 0 ? "eager" : "lazy"}
+                                fetchpriority={index === 0 ? "high" : "auto"}
+                            />
+                        </div>
+                    )}
+                    <div class="mission-content">
+                        <div class="mission-header">
+                            <span class="id">{mission.data.projectCode}</span>
+                            <span class={`type ${mission.data.productionType.toLowerCase()}`}>
+                                {mission.data.productionType === 'SOLO' ? 'Solo' :
+                                 mission.data.productionType === 'TEAM' ? 'Team' : 'Other'}
+                            </span>
+                        </div>
+                        <h3>{mission.data.title}</h3>
+                        <div class="meta">
+                            <span class="date">{mission.data.date}</span>
+                            <div class="tags-container">
+                                <div class="tags-inner">
+                                    {/* [...Array(2)].map(...) は「中身が空の配列を2要素分作って2回繰り返す」ための
+                                        よくあるテクニック。タグを2回連続で並べることで、CSSの横流れアニメーション
+                                        (marquee)がループしても切れ目が見えないようにしている。
+                                        <>...</> は複数の要素をまとめて返すための「フラグメント」という書き方
+                                        (余計な<div>などのタグを増やさずに済む)。 */}
+                                    {[...Array(2)].map(() => (
+                                        <>
+                                            {mission.data.stack.map(s => <span class="tag stack">{s}</span>)}
+                                            {mission.data.technologies.map(t => <span class="tag tech">{t}</span>)}
+                                            {mission.data.tools && mission.data.tools.map(tool => <span class="tag tool">{tool}</span>)}
+                                        </>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                        <p class="desc">{mission.data.description}</p>
+                        <div class="entry-btn">VIEW PROJECT DETAILS</div>
+                    </div>
+                </div>
+            </a>
+        ))}
+    </div>
+
+    <div class="archive-link-container">
+        <a href={`${baseUrl}projects/`} class="btn-archive">
+            VIEW ALL PROJECTS <span class="icon">→</span>
+        </a>
+    </div>
+</section>
+
+<style>
+    .mission-archive {
+        margin: 120px 0;
+        padding: 40px 0;
+        border-top: 1px solid rgba(var(--accent-color-rgb), 0.15);
+        border-bottom: 1px solid rgba(var(--accent-color-rgb), 0.15);
+        background: linear-gradient(to bottom, transparent, rgba(var(--accent-color-rgb), 0.02), transparent);
+    }
+
+    .section-title {
+        font-size: 2.2rem;
+        margin-bottom: 50px;
+        border-left: 8px solid var(--accent-color);
+        padding-left: 20px;
+        color: var(--accent-color);
+        letter-spacing: 0.1em;
+        text-shadow: 0 0 15px rgba(var(--accent-color-rgb), 0.4);
+    }
+
+    .section-title small {
+        font-size: 0.9rem;
+        color: var(--text-sub);
+    }
+
+    .mission-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .mission-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+        min-width: 0;
+    }
+
+    .mission-item {
+        background: rgba(18, 18, 18, 0.6);
+        transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+        cursor: pointer;
+        display: flex;
+        flex-direction: row;
+        gap: 0;
+        overflow: hidden;
+        min-width: 0;
+    }
+
+    @media (max-width: 768px) {
+        .mission-item {
+            flex-direction: column;
+        }
+    }
+
+    .mission-thumbnail {
+        width: 300px;
+        min-width: 300px;
+        height: auto;
+        overflow: hidden;
+        border-right: 1px solid rgba(var(--accent-color-rgb), 0.2);
+        background: #000;
+        flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+        .mission-thumbnail {
+            width: 100%;
+            height: 200px;
+            border-right: none;
+            border-bottom: 1px solid rgba(var(--accent-color-rgb), 0.2);
+        }
+    }
+
+    .mission-thumbnail img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.8;
+        transition: transform 0.3s, opacity 0.3s;
+    }
+
+    .mission-link:hover .mission-thumbnail img {
+        transform: scale(1.05);
+        opacity: 1;
+    }
+
+    .mission-content {
+        padding: 20px;
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .mission-link:hover .mission-item {
+        background: rgba(var(--accent-color-rgb), 0.1);
+        transform: translateX(10px);
+        box-shadow: -5px 0 0 var(--accent-color);
+    }
+
+    .mission-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        font-size: 0.8rem;
+        font-weight: bold;
+    }
+
+    .id {
+        color: var(--accent-color);
+        border: 1px solid var(--accent-color);
+        padding: 2px 8px;
+    }
+
+    .type {
+        padding: 2px 8px;
+        border-radius: 2px;
+        color: #fff;
+        font-size: 0.7rem;
+        font-weight: bold;
+    }
+
+    .type.solo { background: var(--tag-bg); border: 1px solid var(--accent-color); color: var(--accent-color); }
+    .type.team { background: var(--accent-color); color: #000; border: 1px solid var(--accent-glow); }
+    .type.other { background: #333; border: 1px solid #666; color: #fff; }
+
+    h3 {
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+        color: #fff;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .meta {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 15px;
+        font-size: 0.8rem;
+        min-width: 0;
+    }
+
+    .date {
+        color: var(--accent-glow);
+        font-family: monospace;
+    }
+
+    .tags-container {
+        width: 100%;
+        overflow: hidden;
+        position: relative;
+        padding: 5px 0;
+        mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+    }
+
+    .tags-inner {
+        display: flex;
+        gap: 8px;
+        width: max-content;
+        animation: marquee 20s linear infinite;
+    }
+
+    .mission-link:hover .tags-inner {
+        animation-play-state: paused;
+    }
+
+    @keyframes marquee {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+    }
+
+    .tag {
+        flex: 0 0 auto;
+        color: var(--accent-color);
+        background: rgba(var(--accent-color-rgb), 0.1);
+        border: 1px solid rgba(var(--accent-color-rgb), 0.3);
+        padding: 1px 8px;
+        font-size: 0.75rem;
+        font-weight: bold;
+        letter-spacing: 0.05em;
+        white-space: nowrap;
+    }
+
+    .tag.stack::before { content: ":: "; opacity: 0.6; }
+
+    .tag.tech {
+        color: var(--accent-glow);
+        background: rgba(var(--accent-color-rgb), 0.1);
+        border-color: rgba(var(--accent-color-rgb), 0.3);
+    }
+    .tag.tech::before { content: "> "; opacity: 0.6; }
+
+    .tag.tool {
+        color: var(--text-sub);
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+    .tag.tool::before { content: "+ "; opacity: 0.6; }
+
+    .desc {
+        font-size: 0.9rem;
+        line-height: 1.6;
+        color: var(--text-main);
+        margin-bottom: 20px;
+        white-space: pre-wrap;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .entry-btn {
+        text-align: right;
+        font-size: 0.7rem;
+        color: var(--accent-color);
+        font-weight: bold;
+        opacity: 0.6;
+        transition: all 0.3s ease;
+        letter-spacing: 0.1em;
+    }
+
+    .mission-link:hover .entry-btn {
+        opacity: 1;
+        text-shadow: 0 0 8px var(--accent-color), 0 0 15px var(--accent-color);
+        transform: scale(1.05);
+        color: #fff;
+    }
+
+    .archive-link-container {
+        margin-top: 60px;
+        text-align: center;
+    }
+
+    .btn-archive {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        padding: 18px 48px;
+        border: 2px solid var(--accent-color);
+        background: rgba(var(--accent-color-rgb), 0.1);
+        color: var(--accent-color);
+        font-weight: bold;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-family: "Oxanium", sans-serif;
+        font-size: 1.1rem;
+        letter-spacing: 0.1em;
+        box-shadow: 0 0 20px rgba(var(--accent-color-rgb), 0.25);
+        animation: archive-btn-pulse 2.5s ease-in-out infinite;
+    }
+
+    .btn-archive .icon {
+        transition: transform 0.3s ease;
+    }
+
+    .btn-archive:hover {
+        background: var(--accent-color);
+        color: #000;
+        box-shadow: 0 0 30px var(--accent-color);
+        transform: scale(1.05);
+    }
+
+    .btn-archive:hover .icon {
+        transform: translateX(6px);
+    }
+
+    @keyframes archive-btn-pulse {
+        0%, 100% { box-shadow: 0 0 20px rgba(var(--accent-color-rgb), 0.25); }
+        50% { box-shadow: 0 0 30px rgba(var(--accent-color-rgb), 0.5); }
+    }
+
+    @media (max-width: 768px) {
+        .btn-archive {
+            width: 100%;
+            justify-content: center;
+            padding: 16px 20px;
+        }
+    }
+</style>

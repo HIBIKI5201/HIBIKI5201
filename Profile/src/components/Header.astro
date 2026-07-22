@@ -1,0 +1,215 @@
+---
+// ヘッダコンポーネント。サイトのロゴとナビゲーションメニューを含む。
+// すべてのページで src/layouts/Layout.astro から読み込まれる共通パーツ。
+let baseUrl = import.meta.env.BASE_URL;
+if (!baseUrl.endsWith("/")) baseUrl += "/";
+
+// Astro.url は「今まさに生成しようとしているページ」のURL情報を持つオブジェクト。
+// 例えば /projects/project-013/ ページを生成しているときは
+// Astro.url.pathname が "/HIBIKI5201/projects/project-013/" になる。
+// これを使うことで「今どのページを見ているか」をサーバー側(ビルド時)で判定し、
+// ヘッダーのリンクをハイライトさせている(クライアントJSでのURL判定は不要)。
+const pathname = Astro.url.pathname;
+const isProjectsPage = pathname.startsWith(`${baseUrl}projects`);
+
+// ヘッダーはTOP(トップページ)とPROJECTS(プロジェクト一覧)の2項目のみ。
+// トップページ内の各セクションへの導線はページ内のSticky目次が担う。
+const navItems = [
+    { id: "top", label: "TOP", href: `${baseUrl}#top` },
+    { id: "projects", label: "PROJECTS", href: `${baseUrl}projects/` },
+];
+---
+
+<header class="main-header">
+    <div class="header-container">
+        <a href={baseUrl} class="logo">HIKIBI_5201</a>
+
+        <nav class="nav-desktop">
+            <ul class="nav-links">
+                {/*
+                    navItems.map(...) はJavaScriptの配列メソッドをそのままJSXっぽい記法の中で使っている。
+                    Astroのテンプレートは「{ }の中はJS/TSの式として評価され、返した値がHTMLとして展開される」
+                    というReact/JSXに似たルールになっている。ここでは navItems配列の要素数だけ<li>を生成している。
+                */}
+                {navItems.map((item) => (
+                    <li>
+                        {/*
+                            class:list={[{ 条件: true/false }]} はAstro独自のヘルパー構文。
+                            オブジェクトのキーがクラス名、値がtrueのときだけそのクラスが付与される。
+                            通常のJSXなら `class={cond ? "active" : ""}` と書くところを、
+                            複数条件を配列やオブジェクトでまとめて書けるようにしたもの。
+                        */}
+                        <a href={item.href} data-nav-id={item.id} class:list={[{ active: isProjectsPage ? item.id === "projects" : item.id === "top" }]}>{item.label}</a>
+                    </li>
+                ))}
+            </ul>
+        </nav>
+
+        <button class="hamburger" id="hamburger-menu" aria-label="Toggle Menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+    </div>
+
+    <!-- スマホ表示用のメニュー。中身はデスクトップ版と同じnavItemsを再利用している。 -->
+    <nav class="nav-mobile" id="mobile-nav">
+        <ul class="nav-links">
+            {navItems.map((item) => (
+                <li>
+                    <a href={item.href} data-nav-id={item.id} class:list={[{ active: isProjectsPage ? item.id === "projects" : item.id === "top" }]}>{item.label}</a>
+                </li>
+            ))}
+        </ul>
+    </nav>
+
+</header>
+
+<!--
+    <script>タグの中身は、上のフロントマター(--- --- で囲まれた部分)とは違い、
+    ビルド時ではなく「ブラウザ側」で実行される、普通のクライアントサイドJavaScript。
+    Astroはこのコードをそのままバンドルしてブラウザに送る。
+    ハンバーガーメニューの開閉のような「クリックされたら見た目を変える」という
+    インタラクティブな処理は、こうして<script>に書く必要がある
+    (フロントマターの中に書いても、ページ表示後のクリックには反応しない)。
+-->
+<script>
+    const hamburger = document.getElementById('hamburger-menu');
+    const mobileNav = document.getElementById('mobile-nav');
+    const navLinks = document.querySelectorAll('.nav-mobile a');
+
+    hamburger?.addEventListener('click', () => {
+        hamburger.classList.toggle('active');
+        mobileNav?.classList.toggle('active');
+    });
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            hamburger?.classList.remove('active');
+            mobileNav?.classList.remove('active');
+        });
+    });
+</script>
+
+<!--
+    <style>タグ(is:globalなし)はAstroの標準機能で「スコープされたCSS」になる。
+    ビルド時にAstroがこのファイル専用のクラス名(ハッシュ)を自動生成し、
+    ここに書いた .logo などのセレクタは実質的に「このHeader.astro内の.logoにだけ」効く。
+    そのため、他のコンポーネントで同じ名前のクラス(.card など)を使っても衝突しない。
+-->
+<style>
+    .main-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background: rgba(12, 12, 12, 0.95); /* 赤みを排除し、不透明度を調整 */
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(var(--accent-color-rgb), 0.3);
+        z-index: 1000;
+        padding: 10px 0;
+    }
+
+    .header-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo {
+        font-family: "Oxanium", sans-serif;
+        font-weight: bold;
+        color: var(--accent-color);
+        font-size: 1.2rem;
+        letter-spacing: 2px;
+    }
+
+    .nav-links {
+        list-style: none;
+        display: flex;
+        gap: 30px;
+        padding: 0;
+        margin: 0;
+    }
+
+    .nav-links a {
+        color: var(--text-main);
+        font-size: 0.9rem;
+        font-weight: bold;
+        transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover {
+        color: var(--accent-color);
+    }
+
+    .nav-links a.active {
+        color: var(--accent-color);
+        text-shadow: 0 0 8px rgba(var(--accent-color-rgb), 0.6);
+    }
+
+    /* Hamburger Menu */
+    .hamburger {
+        display: none;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 10px;
+    }
+
+    .bar {
+        display: block;
+        width: 25px;
+        height: 2px;
+        margin: 5px auto;
+        transition: all 0.3s ease-in-out;
+        background-color: var(--accent-color);
+    }
+
+    /* Mobile Nav */
+    .nav-mobile {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: rgba(18, 18, 18, 0.95);
+        border-bottom: 1px solid var(--accent-color);
+        padding: 20px 0;
+    }
+
+    .nav-mobile .nav-links {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    @media (max-width: 768px) {
+        .nav-desktop {
+            display: none;
+        }
+
+        .hamburger {
+            display: block;
+        }
+
+        .hamburger.active .bar:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active .bar:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+
+        .hamburger.active .bar:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+
+        .nav-mobile.active {
+            display: block;
+        }
+    }
+</style>
