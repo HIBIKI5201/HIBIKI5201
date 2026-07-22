@@ -6,13 +6,11 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
 const pathname = Astro.url.pathname;
 const isProjectsPage = pathname.startsWith(`${baseUrl}projects`);
 
-// TOP/PROFILE/RECORDS/CAREERはトップページ内のセクションへのアンカー、PROJECTSは実ページへのリンク。
+// ヘッダーはTOP(トップページ)とPROJECTS(プロジェクト一覧)の2項目のみ。
+// トップページ内の各セクションへの導線はページ内のSticky目次が担う。
 const navItems = [
     { id: "top", label: "TOP", href: `${baseUrl}#top` },
-    { id: "profile", label: "PROFILE", href: `${baseUrl}#profile` },
     { id: "projects", label: "PROJECTS", href: `${baseUrl}projects/` },
-    { id: "records", label: "RECORDS", href: `${baseUrl}#records` },
-    { id: "career", label: "CAREER", href: `${baseUrl}#career` },
 ];
 ---
 
@@ -24,7 +22,7 @@ const navItems = [
             <ul class="nav-links">
                 {navItems.map((item) => (
                     <li>
-                        <a href={item.href} data-nav-id={item.id} class:list={[{ active: isProjectsPage && item.id === "projects" }]}>{item.label}</a>
+                        <a href={item.href} data-nav-id={item.id} class:list={[{ active: isProjectsPage ? item.id === "projects" : item.id === "top" }]}>{item.label}</a>
                     </li>
                 ))}
             </ul>
@@ -41,7 +39,7 @@ const navItems = [
         <ul class="nav-links">
             {navItems.map((item) => (
                 <li>
-                    <a href={item.href} data-nav-id={item.id} class:list={[{ active: isProjectsPage && item.id === "projects" }]}>{item.label}</a>
+                    <a href={item.href} data-nav-id={item.id} class:list={[{ active: isProjectsPage ? item.id === "projects" : item.id === "top" }]}>{item.label}</a>
                 </li>
             ))}
         </ul>
@@ -65,27 +63,6 @@ const navItems = [
             mobileNav?.classList.remove('active');
         });
     });
-
-    // トップページのセクションをスクロール位置に応じてハイライトする(存在する場合のみ動作)
-    const sectionIds = ['top', 'profile', 'projects', 'records', 'career'];
-    const allNavLinks = document.querySelectorAll<HTMLAnchorElement>('.nav-links a[data-nav-id]');
-    const sections = sectionIds
-        .map((id) => document.getElementById(id))
-        .filter((el): el is HTMLElement => !!el);
-
-    const setActiveSection = (id: string) => {
-        allNavLinks.forEach((link) => link.classList.toggle('active', link.dataset.navId === id));
-    };
-
-    if (sections.length > 0) {
-        const observer = new IntersectionObserver((entries) => {
-            const visible = entries.filter((e) => e.isIntersecting);
-            if (visible.length === 0) return;
-            const topMost = visible.reduce((a, b) => (a.boundingClientRect.top < b.boundingClientRect.top ? a : b));
-            setActiveSection(topMost.target.id);
-        }, { rootMargin: '-40% 0px -50% 0px', threshold: 0 });
-        sections.forEach((s) => observer.observe(s));
-    }
 </script>
 
 <style>
