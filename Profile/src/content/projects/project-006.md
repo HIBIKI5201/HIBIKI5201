@@ -14,10 +14,11 @@ releaseUrl: "https://unityroom.com/games/hyakki"
 repoUrl: "https://github.com/HIBIKI5201/IndieGamesContest2024.git"
 ---
 
-## overview
+## team info
 制作チーム：プログラマー2名、プランナー1名
 担当箇所： インゲーム全て
 
+## overview
 KONAMI主催のIndie Games Contest 学生選手権 2024に応募した、2Dアクションゲームです。
 剣術と射撃の二つのモードを切り替えながら、押し寄せる妖怪達を倒すアクションゲームです。
 # 説明

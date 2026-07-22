@@ -14,10 +14,11 @@ releaseUrl: "https://unityroom.com/games/oyajivsokan"
 repoUrl: "https://github.com/HIBIKI5201/OyajiVSOkan.git"
 ---
 
-## overview
+## team info
 制作チーム：プログラマー5名、プランナー2名、イラストレーター3名、3Dモデラ―1名
 担当箇所：インゲームのゲームシステム全般、プログラマーのマネジメント
 
+## overview
 バンタンで開催された2日間のゲームジャムイベントで制作された「落ち物系」がテーマのゲームです。
 降り注ぐアイテムや邪魔者を取得したり捨てたりしながら長く生き残るアクションゲームです。
 # 説明

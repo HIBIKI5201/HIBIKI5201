@@ -14,10 +14,11 @@ releaseUrl: "https://unityroom.com/games/hanasu-rot"
 repoUrl: "https://github.com/saruwatarishun0031/0625GameJam.git"
 ---
 
-## overview
+## team info
 制作チーム：プログラマー4名、プランナー1名、イラストレーター2名、3Dモデラ―1名
 担当箇所：インゲームのゲームシステム全般、UI演出
 
+## overview
 バンタンのイベントで開催されたゲームジャムで制作した反射神経パズルゲームです。
 「はなす」というテーマを「話す」と解釈し、お客さんと川から流れてくるアイテムを合わせて「はなす」を作るパズルゲームです。
 （例えばお客に「ナス」が来た場合は、川から「刃（は）」を選択するゲームです）

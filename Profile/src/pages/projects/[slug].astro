@@ -50,15 +50,32 @@ if (!markdownSource) {
 }
 // frontmatter部分(--- ... ---)を正規表現で取り除き、Markdown本文だけを取り出す。
 const markdownBody = markdownSource.replace(/^---[\s\S]*?---\s*/m, "");
+
+// "## team info" という専用の見出しの直後から、次の見出しが出てくる直前までを抜き出す。
+// 「制作チーム：」「担当箇所：」は、## overview側の自由記述と誤って一致しないよう、
+// この専用見出しの下に書かれている場合だけ反応するようにしている。
+const teamInfoMatch = markdownBody.match(/^##\s*team info\s*[\r\n]+([\s\S]*?)(?=^#{1,6}\s|\z)/im);
+const teamInfoMarkdown = teamInfoMatch ? teamInfoMatch[1].trim() : "";
+const teamMatch = teamInfoMarkdown.match(/^制作チーム[:：]\s*(.+)$/m);
+const roleMatch = teamInfoMarkdown.match(/^担当箇所[:：]\s*(.+)$/m);
+const teamComposition = teamMatch ? teamMatch[1].trim() : "";
+const roleInCharge = roleMatch ? roleMatch[1].trim() : "";
+const hasTeamInfo = !!(teamComposition || roleInCharge);
+
+// "## team info" セクションはこの後の処理に含めないよう、本文から取り除いておく。
+const markdownBodyWithoutTeamInfo = teamInfoMatch
+  ? markdownBody.replace(/^##\s*team info\s*[\r\n]+[\s\S]*?(?=^#{1,6}\s|\z)/im, "").trim()
+  : markdownBody;
+
 // "## overview" という見出しの直後から、次の見出しが出てくる直前までを正規表現で抜き出す。
 // これを「概要(OVERVIEW)」として画面上部の専用エリアに表示し、
 // それ以外の本文(説明・アピールポイントなど)は下のmarkdown-contentエリアにまとめて表示する、
 // という2段構成にするための下準備。
-const overviewMatch = markdownBody.match(/^##\s*overview\s*[\r\n]+([\s\S]*?)(?=^#{1,6}\s|\z)/im);
+const overviewMatch = markdownBodyWithoutTeamInfo.match(/^##\s*overview\s*[\r\n]+([\s\S]*?)(?=^#{1,6}\s|\z)/im);
 const overviewMarkdown = overviewMatch ? overviewMatch[1].trim() : "";
 const bodyMarkdown = overviewMarkdown
-  ? markdownBody.replace(/^##\s*overview\s*[\r\n]+[\s\S]*?(?=^#{1,6}\s|\z)/im, "").trim()
-  : markdownBody;
+  ? markdownBodyWithoutTeamInfo.replace(/^##\s*overview\s*[\r\n]+[\s\S]*?(?=^#{1,6}\s|\z)/im, "").trim()
+  : markdownBodyWithoutTeamInfo;
 
 // MarkdownテキストをHTML文字列に変換する関数。
 // unified().use(A).use(B)... という書き方は「処理をパイプのようにつなげる」ライブラリ共通の作法で、
@@ -171,6 +188,23 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         {entry.data.thumbnail && (
             <div class="mission-hero mil-border">
                 <img src={entry.data.thumbnail.startsWith('http') ? entry.data.thumbnail : `${import.meta.env.BASE_URL.replace(/\/$/, '')}/${entry.data.thumbnail.replace(/^\//, '')}`} alt={entry.data.title} class="hero-image" />
+            </div>
+        )}
+
+        {hasTeamInfo && (
+            <div class="mil-border team-info-box">
+                {teamComposition && (
+                    <div class="team-info-row">
+                        <span class="team-info-label">TEAM</span>
+                        <span class="team-info-value">{teamComposition}</span>
+                    </div>
+                )}
+                {roleInCharge && (
+                    <div class="team-info-row">
+                        <span class="team-info-label">ROLE</span>
+                        <span class="team-info-value">{roleInCharge}</span>
+                    </div>
+                )}
             </div>
         )}
 
@@ -385,6 +419,45 @@ if (!baseUrl.endsWith("/")) baseUrl += "/";
         height: 100%;
         object-fit: cover;
         opacity: 0.9;
+    }
+
+    /* Team Info Box */
+    .team-info-box {
+        margin-bottom: 30px;
+        padding: 20px 30px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        background: rgba(26, 20, 20, 0.4);
+        border-color: rgba(var(--accent-color-rgb), 0.3);
+    }
+
+    .team-info-row {
+        display: flex;
+        align-items: baseline;
+        gap: 20px;
+    }
+
+    @media (max-width: 768px) {
+        .team-info-row {
+            flex-direction: column;
+            gap: 4px;
+        }
+    }
+
+    .team-info-label {
+        font-size: 0.65rem;
+        font-weight: bold;
+        color: var(--text-sub);
+        min-width: 120px;
+        flex-shrink: 0;
+        letter-spacing: 0.1em;
+    }
+
+    .team-info-value {
+        color: var(--text-main);
+        font-size: 0.95rem;
+        line-height: 1.6;
     }
 
     /* Intel Module Container */

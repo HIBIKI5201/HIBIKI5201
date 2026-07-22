@@ -14,10 +14,11 @@ releaseUrl: "https://unityroom.com/games/toadroadjumping"
 repoUrl: "https://github.com/ShiomiKazuma/WelcomGameJam2024.git"
 ---
 
-## overview
+## team info
 制作チーム：プログラマー3名、プランナー2名
 担当箇所：インゲームのプレイヤーコントロール
 
+## overview
 バンタンの担当教員主催で行われた2日間のゲームジャムで制作された2Dアクションゲームです。
 ゲームジャムのテーマ「初夏」の、常にジャンプし続けるカエルをゴールまで導くゲームです。
 # 説明
