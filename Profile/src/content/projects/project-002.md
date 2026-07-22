@@ -2,7 +2,7 @@
 projectCode: "PROJECT-002"
 title: "トードロードジャンピング"
 date: "2024-05-21 -> 2024-05-22"
-stack: ["Unity", "C#"]
+stack: ["Unity2022.3", "C#"]
 technologies: ["BRP", "TileMap", "ParticleSystem"]
 tools: []
 productionType: "TEAM"

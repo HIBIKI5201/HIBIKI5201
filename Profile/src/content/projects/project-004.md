@@ -2,7 +2,7 @@
 projectCode: "PROJECT-004"
 title: "Stray Cat Adventure"
 date: "2024-06-09 -> 2024-09-29"
-stack: ["Unity", "C#"]
+stack: ["Unity2022.3", "C#"]
 technologies: ["BRP", "ParticleSystem"]
 tools: []
 productionType: "TEAM"

@@ -2,7 +2,7 @@
 projectCode: "PROJECT-013"
 title: "Symphony Kill The Cryptos"
 date: "2025-06-01 -> 2026-2-17"
-stack: ["Unity", "C#"]
+stack: ["Unity6.3", "C#"]
 technologies: ["Clean Architecture", "DDD", "HDRP", "UI ToolKit"]
 tools: ["CRI Ware LE", "VRM", Blender]
 productionType: "SOLO"

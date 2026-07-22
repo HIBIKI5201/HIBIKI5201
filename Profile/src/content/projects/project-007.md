@@ -2,7 +2,7 @@
 projectCode: "PROJECT-007"
 title: "Symphony Kill The Signal"
 date: "2024-08-01 -> 2024-09-27"
-stack: ["Unity", "C#"]
+stack: ["Unity6.0", "C#"]
 technologies: ["URP", "UI ToolKit", "2D Sprite Animation",  "InputSystem", "AudioMixer", "SaveDataManagement"]
 tools: ["DOTween"]
 productionType: "SOLO"

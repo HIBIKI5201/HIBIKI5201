@@ -2,7 +2,7 @@
 projectCode: "PROJECT-008"
 title: "ダンジョン クラフター"
 date: "2024-10-09 -> 2025-02-12"
-stack: ["Unity", "C#"]
+stack: ["Unity6.0", "C#"]
 technologies: ["URP", "2D Sprite Animation", "AnimationRigging", "NavMesh",  "CinemaChine", "ProBuilder",  "Shader Graph", "UI ToolKit"]
 tools: []
 productionType: "TEAM"

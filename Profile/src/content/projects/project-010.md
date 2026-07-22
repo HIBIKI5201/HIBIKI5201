@@ -2,7 +2,7 @@
 projectCode: "PROJECT-010"
 title: "Symphony Kill The Orchastration"
 date: "2025-02-04 -> 2026-02-13"
-stack: ["Unity", "C#"]
+stack: ["Unity6.0", "C#"]
 technologies: ["URP", "Burst/JobSystem", "AnimationRigging", "NavMesh",  "CinemaChine", "InputSystem", "VFX Graph", "Shader Graph", "UI ToolKit"]
 tools: []
 productionType: "SOLO"

@@ -2,7 +2,7 @@
 projectCode: ""
 title: "ちくわ きゅうり CHARGE SHOT"
 date: "2025-02-25 -> 2025-02-27"
-stack: ["Unity", "C#"]
+stack: ["Unity6.0", "C#"]
 technologies: ["URP", "Shader Graph"]
 tools: [""]
 productionType: "TEAM"

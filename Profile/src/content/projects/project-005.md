@@ -2,7 +2,7 @@
 projectCode: "PROJECT-005"
 title: "はなすロット"
 date: "2024-06-23 -> 2024-06-25"
-stack: ["Unity", "C#"]
+stack: ["Unity2022.3", "C#"]
 technologies: ["BRP"]
 tools: ["DOTween"]
 productionType: "TEAM"

@@ -2,7 +2,7 @@
 projectCode: "PROJECT-012"
 title: "BeatKeeper"
 date: "2025-04-29 -> 2025-09-28"
-stack: ["Unity", "C#"]
+stack: ["Unity6.2", "C#"]
 technologies: ["URP", "LipSync", "Quantize", " Editor Extension(Window, Asset Post Processor)"]
 tools: ["CRI Ware", "MagicaCloth2", "uLipSync", "UniTask", "UniR3", "DOTween"]
 productionType: "TEAM"

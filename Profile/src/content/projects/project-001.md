@@ -2,7 +2,7 @@
 projectCode: "PROJECT-001"
 title: "Liset VR Mission"
 date: "2024-04-24 -> 2024-05-13"
-stack: ["Unity", "C#"]
+stack: ["Unity2022.3", "C#"]
 technologies: ["BRP", "Particle System"]
 tools: []
 productionType: "SOLO"

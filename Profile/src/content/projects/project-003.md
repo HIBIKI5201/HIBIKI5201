@@ -2,7 +2,7 @@
 projectCode: "PROJECT-003"
 title: "おやじVSおかん"
 date: "2024-05-24 -> 2024-05-25"
-stack: ["Unity", "C#"]
+stack: ["Unity2022.3", "C#"]
 technologies: ["URP", "TileMap"]
 tools: []
 productionType: "TEAM"
