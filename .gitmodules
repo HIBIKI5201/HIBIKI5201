@@ -2,3 +2,7 @@
 	path = Articles
 	url = https://github.com/HIBIKI5201/TechArticles.git
 	branch = main
+[submodule "Logo"]
+	path = Logo
+	url = https://github.com/HIBIKI5201/HIBIKI5201_Logo.git
+	branch = main
